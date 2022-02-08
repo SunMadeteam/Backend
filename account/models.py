@@ -49,6 +49,7 @@ class User(AbstractBaseUser):
     CHOICES = ( (1,'admin'),(2,'florist'), (3,'runner'), (4, 'client'), (5, 'superuser'))
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)
+    salary = models.IntegerField(default=None)
     #branch_id=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, default=None, null=True)
 
     USERNAME_FIELD = 'number'
