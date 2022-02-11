@@ -8,8 +8,10 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
+from rest_framework import authentication, permissions
 from .models import ConfirmCode, User
+from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 
 # Create your views here.
 from rest_framework.views import APIView
@@ -34,8 +36,13 @@ class RegisterAPIView(APIView):
         # send_code_to_phone(code,username)
         return Response(data={'message': 'User created!!!'})
 
+class IsAdminUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
 
 class RegisterStaffAPIView(APIView):
+    permission_classes = [IsAdminUser]
+    
     def post(self,request):
         name=request.data['name']
         number=request.data['number']
@@ -53,6 +60,7 @@ class RegisterStaffAPIView(APIView):
         ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
         # send_code_to_phone(code,username)
         return Response(data={'message': 'Staff created!!!'})
+        #return Response(data={'message': f'{request.user.is_staff}'})
 
 class UpdateAPIView(APIView):
     def post(self,request):
@@ -63,7 +71,6 @@ class UpdateAPIView(APIView):
         user = authenticate(number = number, password=password, name = name)
         print(user)
         if user:
-            #user.email="lala@qmail.com"
             user.save()
             Token.objects.filter(user=user).delete()
             token = Token.objects.create(user=user)

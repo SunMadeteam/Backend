@@ -7,7 +7,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, number, password=None, is_active=True, usertype=5):
         user_obj = self.model(password=password, number=number)
         user_obj.set_password(password) # change user password
-        user_obj.staff = True
+        user_obj.is_staff = True
         user_obj.is_active = is_active
         user_obj.is_admin=True
         user_obj.save(using=self._db)
@@ -49,7 +49,7 @@ class User(AbstractBaseUser):
     CHOICES = ( (1,'admin'),(2,'florist'), (3,'runner'), (4, 'client'), (5, 'superuser'))
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)
-    salary = models.IntegerField(default=None)
+    salary = models.IntegerField(default=None, null=True)
     #branch_id=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, default=None, null=True)
 
     USERNAME_FIELD = 'number'
