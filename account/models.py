@@ -34,10 +34,6 @@ class Branch(models.Model):
     adress=models.CharField(max_length=25, blank=True)
     phone_number=models.CharField(max_length=255, blank=True)
     schedule=models.CharField(max_length=11, blank=True)
-
-class UserType(models.Model):
-    CHOICES = ( (1,'admin'),(2,'florist'), (3,'runner'), (4, 'client'), (5, 'superuser'))
-    name = models.IntegerField(choices=CHOICES)
 '''
 class User(AbstractBaseUser):
     username = None

@@ -1,6 +1,5 @@
 import datetime
 import random
-
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import render
@@ -11,9 +10,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 from .models import ConfirmCode, User
-from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import BasePermission
 
-# Create your views here.
 from rest_framework.views import APIView
 
 
