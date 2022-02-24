@@ -17,11 +17,21 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from account import views as account_views
+from shop import views as shop_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 	path('api1/v1/register/', account_views.RegisterAPIView.as_view()),
     path('api1/v1/registerstaff/', account_views.RegisterStaffAPIView.as_view()),
     path('api1/v1/login/', account_views.LoginAPIView.as_view()),
-    path('api1/v1/update/', account_views.UpdateAPIView.as_view()),
+
+    path('api/products/', shop_views.ProductView.as_view()),
+    path('api/categories/', shop_views.CategoryView.as_view()),
+    path('api/cart/', shop_views.CartView.as_view()),
+    path('api/cart_detail/', shop_views.Cart_detailView.as_view()),
+    path('api/order/', shop_views.OrderView.as_view()),
+    path('api/order_detail/', shop_views.Order_detailView.as_view()),
+    path('api/favorites/', shop_views.FavoritesView.as_view()),
+    path('api/delivery/', shop_views.DeliveryView.as_view()),
+    #path('products/<int:pk>', shop_views.ProductView.as_view(), name='product')
 ]

@@ -57,7 +57,7 @@ class RegisterStaffAPIView(APIView):
         valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
         ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
         # send_code_to_phone(code,username)
-        return Response(data={'message': 'Staff created!!!'})
+        return Response(data={'message': f'Staff {user.id} created!!!'})
         #return Response(data={'message': f'{request.user.is_staff}'})
 
 class UpdateAPIView(APIView):

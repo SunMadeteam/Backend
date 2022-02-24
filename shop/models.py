@@ -24,7 +24,7 @@ class Product(models.Model):
     CHOICES = ((1,'easy'),(2,'middle'), (3,'hard'))
     complexity_of_care= models.IntegerField(choices=CHOICES, default=None, null=True)
     florist = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    hight= models.DecimalField(decimal_places=1, max_digits=1)
+    hight= models.DecimalField(max_digits=10, decimal_places=2)
     
     #def get_absolute_url(self):
     #    return reverse('shop:product_list_by_category', args=[self.slug])
@@ -53,8 +53,6 @@ class Delivery(models.Model):
     total_cost= models.IntegerField(default=None, null=True)
     CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
     status=models.IntegerField(choices=CHOICES, default=None, null=True)
-    CHOICES_del = ((1,'delivery'),(2,'pickup'))
-    delivery_type=models.IntegerField(choices=CHOICES, default=None, null=True)
 
 
 class Order(models.Model):
@@ -62,10 +60,14 @@ class Order(models.Model):
     CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
     status=models.IntegerField(choices=CHOICES, default=1)
     total_sum=models.IntegerField(default=0)
+    CHOICES_del = ((1,'delivery'),(2,'pickup'))
+    delivery_type=models.IntegerField(choices=CHOICES, default=None, null=True)
     delivery=models.ForeignKey(Delivery, on_delete=models.CASCADE, default=None, null=True)
+    if delivery_type==2:
+        delivery=None
 
 class Order_detail(models.Model):
-    cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
+    order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)
     quantity= models.IntegerField(default=0)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
