@@ -17,9 +17,9 @@ from rest_framework.views import APIView
 
 class RegisterAPIView(APIView):
     def post(self,request):
-        name=request.data['name']
-        number=request.data['number']
-        password = request.data['password']
+        name=request.data.get('name')
+        number=request.data.get('number')
+        password = request.data.get('password')
         #photo= request.data['photo']
         user = User.objects.create_user(
             number=number,
@@ -42,10 +42,10 @@ class RegisterStaffAPIView(APIView):
     permission_classes = [IsAdminUser]
     
     def post(self,request):
-        name=request.data['name']
-        number=request.data['number']
-        password = request.data['password']
-        usertype= request.data['usertype']
+        name=request.data.get('name')
+        number=request.data.get('number')
+        password = request.data.get('password')
+        usertype= request.data.get('usertype')
         user = User.objects.create_user(
             number=number,
             password=password,
@@ -62,9 +62,9 @@ class RegisterStaffAPIView(APIView):
 
 class UpdateAPIView(APIView):
     def post(self,request):
-        name= request.data['name']
-        number = request.data['number']
-        password = request.data['password']
+        name= request.data.get('name')
+        number = request.data.get('number')
+        password = request.data.get('password')
         print(number, password)
         user = authenticate(number = number, password=password, name = name)
         print(user)
@@ -83,8 +83,8 @@ class UpdateAPIView(APIView):
 
 class LoginAPIView(APIView):
     def post(self, request):
-        number = request.data['number']
-        password = request.data['password']
+        number = request.data.get('number')
+        password = request.data.get('password')
         print(number, password)
         user = authenticate(username = number, password=password)
         print(user)

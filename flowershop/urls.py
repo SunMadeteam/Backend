@@ -33,5 +33,5 @@ urlpatterns = [
     path('api/order_detail/', shop_views.Order_detailView.as_view()),
     path('api/favorites/', shop_views.FavoritesView.as_view()),
     path('api/delivery/', shop_views.DeliveryView.as_view()),
-    #path('products/<int:pk>', shop_views.ProductView.as_view(), name='product')
+    path('products/<int:pk>/', shop_views.Product_DetailView.as_view(), name='product')
 ]

@@ -7,6 +7,12 @@ from rest_framework import serializers
 from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
 from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Cart_detailSerializer,DeliverySerializer, OrderSerializer, Order_detailSerializer, FavoritesSerializer
 
+class Product_DetailView(APIView):
+    def get(self, request, pk):
+        serializer = get_object_or_404(Product.objects.all(), pk=pk)
+        #return Response({"id": serializer.id,'name':serializer.name, 'user': str(request.user), 'auth': str(request.auth)})
+        return Response({"id": serializer.id,"name":serializer.name, "complexity_of_care": serializer.complexity_of_care, "description":serializer.description, "florist":serializer.florist.id, "price":serializer.price, "category":serializer.category.id,"hight":serializer.hight, "image":serializer.image,'user': str(request.user), 'auth': str(request.auth)})
+
 class ProductView(APIView):
     def get(self, request):
         serializer = ProductSerializer(Product.objects.all(), many=True)
@@ -17,7 +23,7 @@ class ProductView(APIView):
         serializer = ProductSerializer(data=product)
         if serializer.is_valid(raise_exception=True):
             product_saved = serializer.save()
-        return Response({"success": "Product '{}' created successfully".format(product_saved.name)})
+        return Response({"success": "Product {} {} created successfully".format(product_saved.name,product_saved.id)})
     def put(self, request, pk):
         saved_product = get_object_or_404(Product.objects.all(), pk=pk)
         data = request.data.get('product')
@@ -25,7 +31,7 @@ class ProductView(APIView):
         if serializer.is_valid(raise_exception=True):
             product_saved = serializer.save()
         return Response({
-            "success": "Product '{}' updated successfully".format(product_saved.title)
+            "success": "Product '{}' updated successfully".format(product_saved.name)
         })
     def delete(self, request, pk):
         # Get object with this pk
