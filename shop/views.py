@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
 from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Cart_detailSerializer,DeliverySerializer, OrderSerializer, Order_detailSerializer, FavoritesSerializer
+from django.shortcuts import get_list_or_404
 
 class Product_DetailView(APIView):
     def get(self, request, pk):
@@ -40,7 +41,12 @@ class ProductView(APIView):
         return Response({
             "message": "Product with id `{}` has been deleted.".format(pk)
         }, status=204)
-        
+
+class Category_DetailView(APIView):
+    def get(self, request, pk):
+        serializer = ProductSerializer(Product.objects.all().filter(category=pk), many=True)
+        return Response({"products": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
+   
 class CategoryView(APIView):
     def get(self, request):
         serializer=CategorySerializer(Category.objects.all(), many=True)
