@@ -32,12 +32,13 @@ class DeliverySerializer(serializers.ModelSerializer):
         instance.adress = validated_data.get('adress', instance.adress)
         instance.runner = validated_data.get('runner', instance.runner)
         instance.total_cost = validated_data.get('total_cost', instance.total_cost)
+        instance.status=validated_data.get('status', instance.status)
         instance.save()
         return instance
 
     class Meta:
         model=Delivery
-        fields = ('id','adress','runner','total_cost')
+        fields = ('id','adress','runner','total_cost','status')
 
 class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):

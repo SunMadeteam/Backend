@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers
-from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
+from .models import Category, Product,Cart, Cart_detail, Delivery, Order, Order_detail, Favorites
 from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Cart_detailSerializer,DeliverySerializer, OrderSerializer, Order_detailSerializer, FavoritesSerializer
 from django.shortcuts import get_list_or_404
 
@@ -106,6 +106,10 @@ class FavoritesView(APIView):
             "message": "Favorites with id `{}` has been deleted.".format(pk)
         }, status=204)
 
+class Delivery_by_statusView(APIView):
+    def get(self, request, pk):
+        serializer=DeliverySerializer(Delivery.objects.all().filter(status=pk), many=True)
+        return Response({"Delivery": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 class DeliveryView(APIView):
     def get(self, request):
@@ -118,9 +122,15 @@ class DeliveryView(APIView):
         serializer = DeliverySerializer(data=delivery)
         if serializer.is_valid(raise_exception=True):
             delivery_saved = serializer.save()
-        return Response({"success": "{} deliver".format(delivery_saved.runner.name)})
-    
-    def put(self, request, pk):
+        return Response({"success": "{} delivering".format(delivery_saved.runner.name)})
+    def put(self, request, pk, format=None):
+        delivery = get_object_or_404(Delivery.objects.all(), pk=pk)
+        serializer = DeliverySerializer(delivery, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    '''def put(self, request, pk):
         saved_delivery = get_object_or_404(Delivery.objects.all(), pk=pk)
         data = request.data.get('delivery')
         serializer = DeliverySerializer(instance=saved_delivery, data=data, partial=True)
@@ -129,7 +139,7 @@ class DeliveryView(APIView):
         return Response({
             "success": "Delivery '{}' updated successfully".format(delivery_saved.author)
         })
-    
+    '''
     def delete(self, request, pk):
         # Get object with this pk
         delivery = get_object_or_404(Delivery.objects.all(), pk=pk)

@@ -9,10 +9,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
-from .models import ConfirmCode, User
+from .models import ConfirmCode, User,Branch
 from rest_framework.permissions import BasePermission
+from .serializer import BranchSerializer, UserSerializer
 
 from rest_framework.views import APIView
+from rest_framework import generics
 
 
 class RegisterAPIView(APIView):
@@ -26,6 +28,7 @@ class RegisterAPIView(APIView):
             password=password,
             name=name,
             is_active=True,
+            is_staff=False
             #photo=photo,
         )
         code = str(random.randint(1000,9999))
@@ -33,10 +36,15 @@ class RegisterAPIView(APIView):
         ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
         # send_code_to_phone(code,username)
         return Response(data={'message': 'User created!!!'})
+    
+    def get(self, request):
+        clients=UserSerializer(User.objects.all().filter(is_staff=False), many=True)
+        return Response({"Clients": clients.data, 'user': str(request.user), 'auth': str(request.auth)})
+
 
 class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_staff
+        return request.user.is_admin
 
 class RegisterStaffAPIView(APIView):
     permission_classes = [IsAdminUser]
@@ -51,7 +59,8 @@ class RegisterStaffAPIView(APIView):
             password=password,
             name=name,
             is_active=True,
-            usertype=usertype
+            usertype=usertype,
+            is_staff=True
         )
         code = str(random.randint(1000,9999))
         valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
@@ -59,6 +68,11 @@ class RegisterStaffAPIView(APIView):
         # send_code_to_phone(code,username)
         return Response(data={'message': f'Staff {user.id} created!!!'})
         #return Response(data={'message': f'{request.user.is_staff}'})
+
+    def get(self, request):
+        staff=UserSerializer(User.objects.all().filter(is_staff=True), many=True)
+        return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})
+
 
 class UpdateAPIView(APIView):
     def post(self,request):
@@ -98,3 +112,23 @@ class LoginAPIView(APIView):
             return Response(data={
                 'message': "User not found!"
             }, status = status.HTTP_404_NOT_FOUND)
+
+# class BranchAPIView(APIView):
+#     def get(self, request):
+#         serializer=BranchSerializer(Branch.objects.all(), many=True)
+#         return Response(serializer.data)
+#     '''def get(self, request):
+#         serializer = BranchSerializer(Branch.objects.all(), many=True)
+#         return Response({"branch": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})'''
+#     def post(self, request):
+#         branch = request.data.get('branch')
+#         serializer = BranchSerializer(data=branch)
+#         if serializer.is_valid(raise_exception=True):
+#             branch_saved = serializer.save()
+#         return Response({"success": "Branch {} {} created".format(branch_saved.adress,branch_saved.id)})
+
+class BranchAPIView(generics.ListCreateAPIView):
+
+    serializer_class = BranchSerializer
+    queryset = Branch.objects.all()
+

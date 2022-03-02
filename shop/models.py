@@ -6,6 +6,7 @@ from django.urls import reverse
          
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
+    image = models.TextField(default=None, null=True)
     class Meta:
         ordering = ('name',)
         verbose_name = 'Категория'

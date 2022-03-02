@@ -24,6 +24,7 @@ urlpatterns = [
 	path('api1/v1/register/', account_views.RegisterAPIView.as_view()),
     path('api1/v1/registerstaff/', account_views.RegisterStaffAPIView.as_view()),
     path('api1/v1/login/', account_views.LoginAPIView.as_view()),
+    path('api1/v1/branch/', account_views.BranchAPIView.as_view()),
 
     path('api/products/', shop_views.ProductView.as_view()),
     path('api/categories/', shop_views.CategoryView.as_view()),
@@ -34,5 +35,7 @@ urlpatterns = [
     path('api/favorites/', shop_views.FavoritesView.as_view()),
     path('api/delivery/', shop_views.DeliveryView.as_view()),
     path('products/<int:pk>/', shop_views.Product_DetailView.as_view(), name='product'),
-    path('category/<int:pk>/', shop_views.Category_DetailView.as_view(), name='category')
+    path('category/<int:pk>/', shop_views.Category_DetailView.as_view(), name='category'),
+    path('delivery/<int:pk>/', shop_views.Delivery_by_statusView.as_view(), name='delivery'),
+    path('api/delivery/<int:pk>/', shop_views.DeliveryView.as_view(), name='delivery'),
 ]

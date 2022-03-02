@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         user_obj.save(using=self._db)
         return user_obj
 
-    def create_user(self, number, name, password=None,photo=None, is_active=True, is_staff=False, usertype=4, branch=None):
+    def create_user(self, number, name, password=None,photo=None, is_active=True, is_staff=True, usertype=4, branch=None):
         if not number:
             raise ValueError("Users must have an number")
         if not password:
@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have a name")
         user_obj = self.model( name=name, password=password, number=number)
         user_obj.set_password(password) # change user password
-        user_obj.staff = is_staff
+        user_obj.is_staff = is_staff
         user_obj.is_active = is_active
         user_obj.photo=photo
         user_obj.usertype=usertype
@@ -32,7 +32,7 @@ class UserManager(BaseUserManager):
 
 class Branch(models.Model):
     adress=models.CharField(max_length=25, blank=True)
-    phone_number=models.CharField(max_length=255, blank=True)
+    phone=models.CharField(max_length=255, blank=True)
     schedule=models.CharField(max_length=11, blank=True)
 
 class User(AbstractBaseUser):
