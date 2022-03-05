@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         user_obj.save(using=self._db)
         return user_obj
 
-    def create_user(self, number, name, password=None,photo=None, is_active=True, is_staff=True, usertype=4, branch=None):
+    def create_user(self, number, name, password=None,photo=None, is_active=True, is_staff=True, usertype=4):
         if not number:
             raise ValueError("Users must have an number")
         if not password:
@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
         user_obj.is_active = is_active
         user_obj.photo=photo
         user_obj.usertype=usertype
-        user_obj.branch=branch
+        # user_obj.branch=branch
         user_obj.save(using=self._db)
         return user_obj
 
@@ -45,9 +45,9 @@ class User(AbstractBaseUser):
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)
     salary = models.IntegerField(default=None, null=True)
-    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING)
-    if usertype!=2:
-        branch=None
+    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, null=True)
+    # if usertype!=2:
+    #     branch=None
     USERNAME_FIELD = 'number'
     REQUIRED_FIELDS = [] 
 

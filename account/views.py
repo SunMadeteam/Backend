@@ -48,32 +48,51 @@ class IsAdminUser(BasePermission):
 
 class RegisterStaffAPIView(APIView):
     permission_classes = [IsAdminUser]
-    
-    def post(self,request):
-        name=request.data.get('name')
-        number=request.data.get('number')
-        password = request.data.get('password')
-        usertype= request.data.get('usertype')
-        branch = request.data.get('branch')
-        # if usertype!=2:
-        #     branch=null
-        user = User.objects.create_user(
-            number=number,
-            password=password,
-            name=name,
-            is_active=True,
-            usertype=usertype,
-            is_staff=True,
-            branch=branch
-        )
-        code = str(random.randint(1000,9999))
-        valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
-        ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
-        # send_code_to_phone(code,username)
-        return Response(data={'message': f'Staff {user.id} created!!!'})
-    def get(self, request):
-        staff=UserSerializer(User.objects.all().filter(is_staff=True), many=True)
-        return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})
+
+    def get(self, request, format=None):
+        user = User.objects.all()
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+    def post(self, request, format=None):
+        # product = request.data.get('product')
+        # Create an article from the above data
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            usertype = serializer.validated_data['usertype']
+            branch = serializer.validated_data['branch']
+
+            if usertype != 2 and branch is not None:
+                return Response(serializer.errors)
+            else:
+                pass
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    # def post(self,request):
+    #     name=request.data.get('name')
+    #     number=request.data.get('number')
+    #     password = request.data.get('password')
+    #     usertype= request.data.get('usertype')
+    #     branch = request.data.get('branch')
+    #     # if usertype!=2:
+    #     #     branch=null
+    #     user = User.objects.create_user(
+    #         number=number,
+    #         password=password,
+    #         name=name,
+    #         is_active=True,
+    #         usertype=usertype,
+    #         is_staff=True,
+    #         # branch=branch,
+    #     )
+    #     code = str(random.randint(1000,9999))
+    #     valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
+    #     ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
+    #     # send_code_to_phone(code,username)
+    #     return Response(data={'message': f'Staff {user.id} created!!!'})
+    # def get(self, request):
+    #     staff=UserSerializer(User.objects.all().filter(is_staff=True), many=True)
+    #     return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 
 class UpdateAPIView(APIView):
