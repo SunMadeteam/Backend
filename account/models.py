@@ -41,6 +41,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=255, blank=True, null=True)
     is_staff=models.BooleanField(default=False)
     is_admin=models.BooleanField(default=False)
+    is_active= models.BooleanField(default=True)
     CHOICES = ( (1,'admin'),(2,'florist'), (3,'runner'), (4, 'client'), (5, 'superuser'))
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)

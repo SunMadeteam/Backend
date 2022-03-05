@@ -208,3 +208,6 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
 }
+CORS_ALLOWED_ORIGINS=[
+    "https://sunmadebackend.herokuapp.com"
+]

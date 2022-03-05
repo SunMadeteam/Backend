@@ -54,8 +54,6 @@ class RegisterStaffAPIView(APIView):
         serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
     def post(self, request, format=None):
-        # product = request.data.get('product')
-        # Create an article from the above data
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             usertype = serializer.validated_data['usertype']

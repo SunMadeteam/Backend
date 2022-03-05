@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', instance.username)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
         instance.is_admin = validated_data.get('is_admin', instance.is_admin)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.usertype = validated_data.get('usertype', instance.usertype)
         instance.photo = validated_data.get('photo', instance.photo)
         instance.salary = validated_data.get('salary', instance.salary)
@@ -21,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields = ('id', 'name','username','number','is_staff','is_admin','usertype', 'photo', 'salary', 'branch')
+        fields = ('id', 'name','username','number','is_staff','is_admin','is_active','usertype', 'photo', 'salary', 'branch')
 
 class BranchSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
