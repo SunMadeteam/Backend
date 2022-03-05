@@ -209,5 +209,6 @@ DJOSER = {
     'SERIALIZERS': {},
 }
 CORS_ALLOWED_ORIGINS=[
-    "https://sunmadebackend.herokuapp.com"
+    "https://sunmadebackend.herokuapp.com",
+    "http://localhost:8000"
 ]
