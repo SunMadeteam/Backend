@@ -45,8 +45,9 @@ class User(AbstractBaseUser):
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)
     salary = models.IntegerField(default=None, null=True)
-    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, default=None, null=True)
-
+    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING)
+    if usertype!=2:
+        branch=None
     USERNAME_FIELD = 'number'
     REQUIRED_FIELDS = [] 
 

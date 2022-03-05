@@ -54,21 +54,23 @@ class RegisterStaffAPIView(APIView):
         number=request.data.get('number')
         password = request.data.get('password')
         usertype= request.data.get('usertype')
+        branch = request.data.get('branch')
+        # if usertype!=2:
+        #     branch=null
         user = User.objects.create_user(
             number=number,
             password=password,
             name=name,
             is_active=True,
             usertype=usertype,
-            is_staff=True
+            is_staff=True,
+            branch=branch
         )
         code = str(random.randint(1000,9999))
         valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
         ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
         # send_code_to_phone(code,username)
         return Response(data={'message': f'Staff {user.id} created!!!'})
-        #return Response(data={'message': f'{request.user.is_staff}'})
-
     def get(self, request):
         staff=UserSerializer(User.objects.all().filter(is_staff=True), many=True)
         return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})

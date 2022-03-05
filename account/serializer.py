@@ -4,7 +4,7 @@ from .models import User, Branch
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
-        return Product.objects.create(**validated_data)
+        return User.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
