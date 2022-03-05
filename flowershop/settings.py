@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework.permissions',
+    'corsheaders',
     'shop',
     'account',
 ]
