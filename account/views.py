@@ -59,6 +59,7 @@ class RegisterStaffAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     def put(self, request, pk, format=None):
         user = get_object_or_404(User.objects.filter(is_staff=True), pk=pk)
         serializer = UserSerializer(user, data=request.data)
