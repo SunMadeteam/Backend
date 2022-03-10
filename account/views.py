@@ -12,6 +12,7 @@ from rest_framework import authentication, permissions
 from .models import ConfirmCode, User,Branch
 from rest_framework.permissions import BasePermission
 from .serializer import BranchSerializer, UserSerializer
+from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -56,16 +57,17 @@ class RegisterStaffAPIView(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            usertype = serializer.validated_data['usertype']
-            branch = serializer.validated_data['branch']
-
-            if usertype != 2 and branch is not None:
-                return Response(serializer.errors)
-            else:
-                pass
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk, format=None):
+        user = get_object_or_404(User.objects.filter(is_staff=True), pk=pk)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     # def post(self,request):
     #     name=request.data.get('name')
     #     number=request.data.get('number')
@@ -93,27 +95,6 @@ class RegisterStaffAPIView(APIView):
     #     return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 
-class UpdateAPIView(APIView):
-    def post(self,request):
-        name= request.data.get('name')
-        number = request.data.get('number')
-        password = request.data.get('password')
-        print(number, password)
-        user = authenticate(number = number, password=password, name = name)
-        print(user)
-        if user:
-            user.save()
-            Token.objects.filter(user=user).delete()
-            token = Token.objects.create(user=user)
-            return Response(data={
-                'token': token.key
-            })
-        else:
-            return Response(data={
-                'message': "User not found!"
-            }, status = status.HTTP_404_NOT_FOUND)
-
-
 class LoginAPIView(APIView):
     def post(self, request):
         number = request.data.get('number')
@@ -130,7 +111,7 @@ class LoginAPIView(APIView):
         else:
             return Response(data={
                 'message': "User not found!"
-            }, status = status.HTTP_404_NOT_FOUND)
+            }, status = status.HTTP_400_BAD_REQUEST)
 
 # class BranchAPIView(APIView):
 #     def get(self, request):
@@ -147,7 +128,6 @@ class LoginAPIView(APIView):
 #         return Response({"success": "Branch {} {} created".format(branch_saved.adress,branch_saved.id)})
 
 class BranchAPIView(generics.ListCreateAPIView):
-
     serializer_class = BranchSerializer
     queryset = Branch.objects.all()
 

@@ -4,16 +4,15 @@ from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager)
 
 class UserManager(BaseUserManager):
-    def create_superuser(self, number, password=None, is_active=True, usertype=5):
+    def create_superuser(self, number, password=None, usertype=5):
         user_obj = self.model(password=password, number=number)
         user_obj.set_password(password) # change user password
         user_obj.is_staff = True
-        user_obj.is_active = is_active
         user_obj.is_admin=True
         user_obj.save(using=self._db)
         return user_obj
 
-    def create_user(self, number, name, password=None,photo=None, is_active=True, is_staff=True, usertype=4):
+    def create_user(self, number, name, password=None,photo=None, is_staff=True, usertype=4):
         if not number:
             raise ValueError("Users must have an number")
         if not password:
@@ -23,7 +22,6 @@ class UserManager(BaseUserManager):
         user_obj = self.model( name=name, password=password, number=number)
         user_obj.set_password(password) # change user password
         user_obj.is_staff = is_staff
-        user_obj.is_active = is_active
         user_obj.photo=photo
         user_obj.usertype=usertype
         # user_obj.branch=branch
@@ -39,14 +37,14 @@ class User(AbstractBaseUser):
     username = None
     number = models.CharField(max_length=13, blank=True, unique=True, null=False)
     name = models.CharField(max_length=255, blank=True, null=True)
-    is_staff=models.BooleanField(default=False)
+    is_staff=models.BooleanField(default=True)
     is_admin=models.BooleanField(default=False)
     is_active= models.BooleanField(default=True)
     CHOICES = ( (1,'admin'),(2,'florist'), (3,'runner'), (4, 'client'), (5, 'superuser'))
     usertype = models.IntegerField(choices=CHOICES, default=4)
     photo = models.TextField(default=None, null=True)
     salary = models.IntegerField(default=None, null=True)
-    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, null=True)
+    branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, null=True, blank=True)
     # if usertype!=2:
     #     branch=None
     USERNAME_FIELD = 'number'

@@ -3,26 +3,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from .models import User, Branch
 
 class UserSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        return User.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.number = validated_data.get('number', instance.number)
-        instance.username = validated_data.get('username', instance.username)
-        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-        instance.is_admin = validated_data.get('is_admin', instance.is_admin)
-        instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.usertype = validated_data.get('usertype', instance.usertype)
-        instance.photo = validated_data.get('photo', instance.photo)
-        instance.salary = validated_data.get('salary', instance.salary)
-        instance.branch = validated_data.get('branch', instance.branch)
-        instance.save()
-        return instance
-
+    def validate(self, data):
+        if data.get('usertype')!=2:
+            data['branch'] = None
+        return data
+    is_active = serializers.BooleanField(read_only=True)
     class Meta:
         model=User
-        fields = ('id', 'name','username','number','is_staff','is_admin','is_active','usertype', 'photo', 'salary', 'branch')
+        fields = ('id', 'name','username','number','is_staff','is_active','is_admin','usertype', 'photo', 'salary', 'branch')
 
 class BranchSerializer(serializers.ModelSerializer):
     def create(self, validated_data):

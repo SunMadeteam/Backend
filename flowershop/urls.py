@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 	path('api1/v1/register/', account_views.RegisterAPIView.as_view()),
     path('api1/v1/registerstaff/', account_views.RegisterStaffAPIView.as_view()),
+    path('api1/v1/registerstaff/<int:pk>/', account_views.RegisterStaffAPIView.as_view()),
     path('api1/v1/login/', account_views.LoginAPIView.as_view()),
     path('api1/v1/branch/', account_views.BranchAPIView.as_view()),
 

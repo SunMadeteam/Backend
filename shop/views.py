@@ -130,16 +130,7 @@ class DeliveryView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    '''def put(self, request, pk):
-        saved_delivery = get_object_or_404(Delivery.objects.all(), pk=pk)
-        data = request.data.get('delivery')
-        serializer = DeliverySerializer(instance=saved_delivery, data=data, partial=True)
-        if delivery.is_valid(raise_exception=True):
-            delivery_saved = serializer.save()
-        return Response({
-            "success": "Delivery '{}' updated successfully".format(delivery_saved.author)
-        })
-    '''
+
     def delete(self, request, pk):
         # Get object with this pk
         delivery = get_object_or_404(Delivery.objects.all(), pk=pk)
