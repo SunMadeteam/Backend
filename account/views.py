@@ -28,7 +28,6 @@ class RegisterAPIView(APIView):
             number=number,
             password=password,
             name=name,
-            is_active=True,
             is_staff=False
             #photo=photo,
         )
