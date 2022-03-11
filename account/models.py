@@ -29,9 +29,9 @@ class UserManager(BaseUserManager):
         return user_obj
 
 class Branch(models.Model):
-    adress=models.CharField(max_length=25, blank=True)
-    phone=models.CharField(max_length=255, blank=True)
-    schedule=models.CharField(max_length=11, blank=True)
+    adress=models.CharField(max_length=100, blank=True)
+    phone=models.CharField(max_length=16, blank=True)
+    schedule=models.CharField(max_length=15, blank=True)
 
 class User(AbstractBaseUser):
     username = None
