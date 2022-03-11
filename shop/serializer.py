@@ -45,11 +45,12 @@ class CategorySerializer(serializers.ModelSerializer):
         return Category.objects.create(**validated_data)
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
+        instance.image= validated_data.get('image', instance.name)
         instance.save()
         return instance
     class Meta:
         model=Category
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'image')
 
 class Cart_detailSerializer(serializers.ModelSerializer):
     class Meta:
