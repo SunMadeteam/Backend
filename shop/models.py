@@ -25,7 +25,7 @@ class Product(models.Model):
     CHOICES = ((1,'easy'),(2,'middle'), (3,'hard'))
     complexity_of_care= models.IntegerField(choices=CHOICES, default=None, null=True)
     florist = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
-    hight= models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    hight= models.DecimalField(max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     
     #def get_absolute_url(self):
     #    return reverse('shop:product_list_by_category', args=[self.slug])
