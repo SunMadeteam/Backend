@@ -213,5 +213,6 @@ DJOSER = {
 }
 CORS_ALLOWED_ORIGINS=[
     "https://sunmadebackend.herokuapp.com",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://sunmadesaule.netlify.app"
 ]
