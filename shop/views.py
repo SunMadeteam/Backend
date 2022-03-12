@@ -13,6 +13,10 @@ class Product_DetailView(APIView):
         serializer = get_object_or_404(Product.objects.all(), pk=pk)
         #return Response({"id": serializer.id,'name':serializer.name, 'user': str(request.user), 'auth': str(request.auth)})
         return Response({"id": serializer.id,"name":serializer.name, "complexity_of_care": serializer.complexity_of_care, "description":serializer.description, "florist":serializer.florist.id, "price":serializer.price, "category":serializer.category.id,"hight":serializer.hight, "image":serializer.image,'user': str(request.user), 'auth': str(request.auth)})
+    def delete(self, request, pk):
+        product = get_object_or_404(Product.objects.all(), pk=pk)
+        product.delete()
+        return Response({"success": "Product delete"})
 
 class ProductView(APIView):
     def get(self, request):
