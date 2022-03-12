@@ -50,7 +50,11 @@ class Category_DetailView(APIView):
     def get(self, request, pk):
         serializer = ProductSerializer(Product.objects.all().filter(category=pk), many=True)
         return Response({"products": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
-   
+    def delete(self, request, pk):
+        category = get_object_or_404(Category.objects.all(), pk=pk)
+        category.delete()
+        return Response({"success": "Category delete"})
+
 class CategoryView(APIView):
     def get(self, request):
         serializer=CategorySerializer(Category.objects.all(), many=True)
@@ -61,7 +65,7 @@ class CategoryView(APIView):
         serializer = CategorySerializer(data=category)
         if serializer.is_valid(raise_exception=True):
             category_saved = serializer.save()
-        return Response({"success": "Category '{}' created successfully".format(category_saved.name)})
+        return Response({"success": "Category '{}' '{}' created successfully".format(category_saved.name, category_saved.id)})
     def put(self, request, pk=None):
         saved_category = get_object_or_404(Category.objects.all(), pk=pk)
         data = request.data.get('category')
@@ -71,13 +75,6 @@ class CategoryView(APIView):
         return Response({
             "success": "Category '{}' updated successfully".format(category_saved.name)
         })
-    def delete(self, request, pk):
-        # Get object with this pk
-        category = get_object_or_404(Category.objects.all(), pk=pk)
-        category.delete()
-        return Response({
-            "message": "Category with id `{}` has been deleted.".format(pk)
-        }, status=204)
 
 class FavoritesView(APIView):
     def get(self, request):
