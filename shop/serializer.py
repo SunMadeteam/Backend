@@ -86,7 +86,7 @@ class CartSerializer(serializers.ModelSerializer):
 class Order_detailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order_detail 
-        fields=('id','order', 'quantity', 'product')
+        fields=('id','order', 'quantity', 'product', 'date')
     def create(self, validated_data):
         return Order_detail.objects.create(**validated_data)
     def update(self, instance, validated_data):

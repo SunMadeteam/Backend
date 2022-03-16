@@ -9,6 +9,8 @@ from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Ca
 from django.shortcuts import get_list_or_404
 
 from rest_framework import generics
+from django_filters import FilterSet
+from django_filters import DateTimeFilter, NumberFilter
 
 class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
@@ -38,7 +40,11 @@ class Delivery_by_statusView(APIView):
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
-
+    search_fields = ["number", "date"]
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    )
 class CartView(generics.ListCreateAPIView):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
@@ -47,14 +53,18 @@ class Cart_detailView(generics.ListCreateAPIView):
     serializer_class = Cart_detailSerializer
     queryset = Cart_detail.objects.all()
 
-class OrderView(generics.ListCreateAPIView):
-    serializer_class = OrderSerializer
-    queryset = Order.objects.all()
-
 class Order_detailView(generics.ListCreateAPIView):
     serializer_class = Order_detailSerializer
     queryset = Order_detail.objects.all()
 
+class OrderView(ModelViewSet):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    search_fields = ["number", "date"]
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    )
 '''
 class Product_DetailView(APIView):
     def get(self, request, pk):

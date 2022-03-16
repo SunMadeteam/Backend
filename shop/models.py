@@ -37,12 +37,10 @@ class Product(models.Model):
     def str(self):
         return self.name
 
-
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_sum=models.IntegerField(default=0)
         
-
 class Cart_detail(models.Model):
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity= models.IntegerField(default=0)
@@ -55,13 +53,14 @@ class Delivery(models.Model):
     CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
     status=models.IntegerField(choices=CHOICES, default=None, null=True)
     date=models.DateField(auto_now_add=True, null=True)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE,default=None, null=True)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
     status=models.IntegerField(choices=CHOICES, default=1)
     total_sum=models.IntegerField(default=0)
-    delivery=models.OneToOneField(Delivery, on_delete=models.CASCADE,default=None, null=True)
+    date=models.DateField(auto_now_add=True, null=True)
 
 class Order_detail(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)
