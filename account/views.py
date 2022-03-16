@@ -14,7 +14,6 @@ from rest_framework.permissions import BasePermission
 from .serializer import BranchSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
 
-from rest_framework.views import APIView
 from rest_framework import generics
 
 
@@ -67,32 +66,6 @@ class RegisterStaffAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # def post(self,request):
-    #     name=request.data.get('name')
-    #     number=request.data.get('number')
-    #     password = request.data.get('password')
-    #     usertype= request.data.get('usertype')
-    #     branch = request.data.get('branch')
-    #     # if usertype!=2:
-    #     #     branch=null
-    #     user = User.objects.create_user(
-    #         number=number,
-    #         password=password,
-    #         name=name,
-    #         is_active=True,
-    #         usertype=usertype,
-    #         is_staff=True,
-    #         # branch=branch,
-    #     )
-    #     code = str(random.randint(1000,9999))
-    #     valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
-    #     ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
-    #     # send_code_to_phone(code,username)
-    #     return Response(data={'message': f'Staff {user.id} created!!!'})
-    # def get(self, request):
-    #     staff=UserSerializer(User.objects.all().filter(is_staff=True), many=True)
-    #     return Response({"Staff": staff.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 
 class LoginAPIView(APIView):

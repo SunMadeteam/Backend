@@ -54,7 +54,7 @@ class Delivery(models.Model):
     total_cost= models.IntegerField(default=None, null=True)
     CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
     status=models.IntegerField(choices=CHOICES, default=None, null=True)
-
+    date=models.DateField(auto_now_add=True, null=True)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

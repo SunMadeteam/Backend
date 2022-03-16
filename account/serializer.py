@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
             data['branch'] = None
         return data
     is_staff = serializers.BooleanField(read_only=True)
+    
     class Meta:
         model=User
         fields = ('id', 'name','username','number','is_staff','is_active','is_admin','usertype', 'photo', 'salary', 'branch')

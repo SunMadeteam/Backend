@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.core.validators import MaxValueValidator, MinValueValidator
 from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
+import datetime
 
 class ProductSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -24,7 +25,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class DeliverySerializer(serializers.ModelSerializer):
-    
+    '''
+    def validate(self, data):
+        data['date'] = datetime.now()
+        return data
+    '''
     def create(self, validated_data):
         return Delivery.objects.create(**validated_data)
 
@@ -93,6 +98,7 @@ class Order_detailSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
     def update(self, instance, validated_data):
@@ -102,12 +108,12 @@ class OrderSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get('status', instance.status)
         instance.delivery_type = validated_data.get('delivery_type', instance.delivery_type)
         instance.delivery = validated_data.get('delivery', instance.delivery)
-        
+        instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance
     class Meta:
         model=Order
-        fields=( 'id', 'user','total_sum', 'delivery', 'status', 'delivery_type')
+        fields=( 'id', 'user','total_sum', 'delivery', 'status', 'delivery_type','date')
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
