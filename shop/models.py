@@ -61,11 +61,7 @@ class Order(models.Model):
     CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
     status=models.IntegerField(choices=CHOICES, default=1)
     total_sum=models.IntegerField(default=0)
-    CHOICES_del = ((1,'delivery'),(2,'pickup'))
-    delivery_type=models.IntegerField(choices=CHOICES, default=None, null=True)
-    delivery=models.ForeignKey(Delivery, on_delete=models.CASCADE, default=None, null=True)
-    if delivery_type==2:
-        delivery=None
+    delivery=models.OneToOneField(Delivery, on_delete=models.CASCADE,default=None, null=True)
 
 class Order_detail(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)

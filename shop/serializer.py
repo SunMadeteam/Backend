@@ -43,7 +43,7 @@ class DeliverySerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Delivery
-        fields = ('id','adress','runner','total_cost','status')
+        fields = ('id','adress','runner','total_cost','status', 'date')
 
 class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
