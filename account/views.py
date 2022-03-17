@@ -16,7 +16,6 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
 
-
 class RegisterAPIView(APIView):
     def post(self,request):
         name=request.data.get('name')
@@ -37,7 +36,7 @@ class RegisterAPIView(APIView):
         return Response(data={'message': 'User created!!!'})
     
     def get(self, request):
-        clients=UserSerializer(User.objects.all().filter(is_staff=False), many=True)
+        clients=UserSerializer(User.objects.filter(is_staff=False), many=True)
         return Response({"Clients": clients.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 
@@ -46,10 +45,10 @@ class IsAdminUser(BasePermission):
         return request.user.is_admin
 
 class RegisterStaffAPIView(APIView):
-    permission_classes = [IsAdminUser]
+    #permission_classes = [IsAdminUser]
 
     def get(self, request, format=None):
-        user = User.objects.all()
+        user = User.objects.filter(is_staff=True, is_admin=False)
         serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
     def post(self, request, format=None):
@@ -59,14 +58,6 @@ class RegisterStaffAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def put(self, request, pk, format=None):
-        user = get_object_or_404(User.objects.filter(is_staff=True), pk=pk)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class LoginAPIView(APIView):
     def post(self, request):

@@ -16,12 +16,14 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.florist = validated_data.get('florist', instance.florist)
         instance.hight = validated_data.get('hight', instance.hight)
         instance.category = validated_data.get('category', instance.category)
+        instance.quantity= validated_data.get('quantity', instance.quantity)
+
         instance.save()
         return instance
 
     class Meta:
         model=Product
-        fields = ('id', 'name','complexity_of_care','description','florist','price','category', 'hight', 'image')
+        fields = ('id', 'name','complexity_of_care','description','florist','price','category', 'hight', 'image','quantity')
 
 
 class DeliverySerializer(serializers.ModelSerializer):
@@ -105,15 +107,13 @@ class OrderSerializer(serializers.ModelSerializer):
         instance.user = validated_data.get('user', instance.user)
         instance.status=validated_data.get('status', instance.status)
         instance.total_sum = validated_data.get('total_sum', instance.total_sum)
-        instance.status = validated_data.get('status', instance.status)
-        instance.delivery_type = validated_data.get('delivery_type', instance.delivery_type)
         instance.delivery = validated_data.get('delivery', instance.delivery)
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance
     class Meta:
         model=Order
-        fields=( 'id', 'user','total_sum', 'delivery', 'status', 'delivery_type','date')
+        fields=( 'id', 'user','total_sum', 'delivery','date')
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:

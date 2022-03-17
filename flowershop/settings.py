@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework.permissions',
+    'django_filters',
     'corsheaders',
     'shop',
     'account',
@@ -129,8 +130,12 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         #'rest_framework.permissions.IsAuthenticated',
         #'rest_framework.permissions.AllowAny'
-    ),
-    
+    ),    
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 16
 }
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

@@ -7,10 +7,10 @@ from rest_framework import serializers
 from .models import Category, Product,Cart, Cart_detail, Delivery, Order, Order_detail, Favorites
 from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Cart_detailSerializer,DeliverySerializer, OrderSerializer, Order_detailSerializer, FavoritesSerializer
 from django.shortcuts import get_list_or_404
-
 from rest_framework import generics
-from django_filters import FilterSet
-from django_filters import DateTimeFilter, NumberFilter
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
@@ -19,7 +19,11 @@ class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
 class ProductView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
+    search_fields = ["name", "hight"]
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    )
 class Category_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -57,10 +61,10 @@ class Order_detailView(generics.ListCreateAPIView):
     serializer_class = Order_detailSerializer
     queryset = Order_detail.objects.all()
 
-class OrderView(ModelViewSet):
+class OrderView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-    search_fields = ["number", "date"]
+    search_fields = ["user__number","date"]
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,

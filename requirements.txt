@@ -11,3 +11,4 @@ djangorestframework
 djoser
 python-decouple==3.1
 django-cors-headers==3.11.0
+django-filter==21.1

@@ -26,7 +26,7 @@ class Product(models.Model):
     complexity_of_care= models.IntegerField(choices=CHOICES, default=None, null=True)
     florist = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
     hight= models.DecimalField(max_digits=10, decimal_places=2, default=None, null=True, blank=True)
-    
+    quantity= models.IntegerField(null=True, default=None)
     #def get_absolute_url(self):
     #    return reverse('shop:product_list_by_category', args=[self.slug])
 
@@ -46,15 +46,6 @@ class Cart_detail(models.Model):
     quantity= models.IntegerField(default=0)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-class Delivery(models.Model):
-    adress = models.TextField()
-    runner = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_cost= models.IntegerField(default=None, null=True)
-    CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
-    status=models.IntegerField(choices=CHOICES, default=None, null=True)
-    date=models.DateField(auto_now_add=True, null=True)
-    order = models.OneToOneField(Order, on_delete=models.CASCADE,default=None, null=True)
-
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
@@ -66,6 +57,15 @@ class Order_detail(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)
     quantity= models.IntegerField(default=0)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+class Delivery(models.Model):
+    adress = models.TextField()
+    runner = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_cost= models.IntegerField(default=None, null=True)
+    CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
+    status=models.IntegerField(choices=CHOICES, default=None, null=True)
+    date=models.DateField(auto_now_add=True, null=True)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, default=None, null=True)
 
 class Favorites(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
