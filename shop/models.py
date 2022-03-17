@@ -47,7 +47,7 @@ class Cart_detail(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
     status=models.IntegerField(choices=CHOICES, default=1)
     total_sum=models.IntegerField(default=0)
@@ -66,6 +66,7 @@ class Delivery(models.Model):
     status=models.IntegerField(choices=CHOICES, default=None, null=True)
     date=models.DateField(auto_now_add=True, null=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, default=None, null=True)
+    number = models.CharField(max_length=13, blank=True, null=True)
 
 class Favorites(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)

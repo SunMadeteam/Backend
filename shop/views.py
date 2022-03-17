@@ -36,22 +36,22 @@ class FavoritesView(generics.ListCreateAPIView):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
 
-class Delivery_by_statusView(APIView):
-    def get(self, request, pk):
-        serializer=DeliverySerializer(Delivery.objects.all().filter(status=pk), many=True)
-        return Response({"Delivery": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
+class Delivery_by_statusView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DeliverySerializer
+    queryset = Delivery.objects.all() 
+
 
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
-    search_fields = ["number", "date"]
+    search_fields = ["date", "status", "order__user__number"]
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,
     )
 class CartView(generics.ListCreateAPIView):
-    serializer_class = FavoritesSerializer
-    queryset = Favorites.objects.all()
+    serializer_class = CartSerializer
+    queryset = Cart.objects.all()
 
 class Cart_detailView(generics.ListCreateAPIView):
     serializer_class = Cart_detailSerializer
@@ -64,11 +64,12 @@ class Order_detailView(generics.ListCreateAPIView):
 class OrderView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-    search_fields = ["user__number","date"]
+    search_fields = ["user__number", "status"]
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,
     )
+    
 '''
 class Product_DetailView(APIView):
     def get(self, request, pk):
@@ -150,6 +151,10 @@ class Cart_detailView(APIView):
         if serializer.is_valid(raise_exception=True):
             cart_detail_saved = serializer.save()
         return Response({"success": "Cart_detail '{}' created successfully".format(cart_detail_saved.product)})
+class Delivery_by_statusView(APIView):
+    def get(self, request, pk):
+        serializer=DeliverySerializer(Delivery.objects.all().filter(status=pk), many=True)
+        return Response({"Delivery": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 class OrderView(APIView):
     def get(self, request):

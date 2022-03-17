@@ -40,12 +40,14 @@ class DeliverySerializer(serializers.ModelSerializer):
         instance.runner = validated_data.get('runner', instance.runner)
         instance.total_cost = validated_data.get('total_cost', instance.total_cost)
         instance.status=validated_data.get('status', instance.status)
+        instance.order=validated_data.get('order',instance.order)
+
         instance.save()
         return instance
 
     class Meta:
         model=Delivery
-        fields = ('id','adress','runner','total_cost','status', 'date')
+        fields = ('id','adress','runner','total_cost','status', 'date', 'order')
 
 class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -88,7 +90,7 @@ class CartSerializer(serializers.ModelSerializer):
 class Order_detailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order_detail 
-        fields=('id','order', 'quantity', 'product', 'date')
+        fields=('id','order', 'quantity', 'product')
     def create(self, validated_data):
         return Order_detail.objects.create(**validated_data)
     def update(self, instance, validated_data):
@@ -100,20 +102,18 @@ class Order_detailSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
     def update(self, instance, validated_data):
         instance.user = validated_data.get('user', instance.user)
         instance.status=validated_data.get('status', instance.status)
         instance.total_sum = validated_data.get('total_sum', instance.total_sum)
-        instance.delivery = validated_data.get('delivery', instance.delivery)
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance
     class Meta:
         model=Order
-        fields=( 'id', 'user','total_sum', 'delivery','date')
+        fields=( 'id', 'user','total_sum','date', 'status')
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
