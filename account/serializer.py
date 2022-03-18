@@ -21,7 +21,7 @@ class BranchSerializer(serializers.ModelSerializer):
         instance.adress = validated_data.get('adress', instance.adress)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.schedule = validated_data.get('schedule', instance.schedule)
-
+        
         instance.save()
         return instance
 

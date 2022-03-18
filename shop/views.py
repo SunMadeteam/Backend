@@ -44,7 +44,7 @@ class Delivery_by_statusView(generics.RetrieveUpdateDestroyAPIView):
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
-    search_fields = ["date", "status", "order__user__number"]
+    search_fields = ["date", "status", "order__user__number", "order__id"]
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,

@@ -15,6 +15,9 @@ from .serializer import BranchSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class RegisterAPIView(APIView):
     def post(self,request):
@@ -44,9 +47,16 @@ class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_admin
 
-class RegisterStaffAPIView(APIView):
-    #permission_classes = [IsAdminUser]
-
+class RegisterStaffAPIView(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(is_staff=True, is_admin=False)
+    search_fields = ["number", "is_active", "usertype"]
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    )
+    
+    '''
     def get(self, request, format=None):
         user = User.objects.filter(is_staff=True, is_admin=False)
         serializer = UserSerializer(user, many=True)
@@ -57,7 +67,7 @@ class RegisterStaffAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+    '''  
 
 class LoginAPIView(APIView):
     def post(self, request):

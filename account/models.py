@@ -9,6 +9,7 @@ class UserManager(BaseUserManager):
         user_obj.set_password(password) # change user password
         user_obj.is_staff = True
         user_obj.is_admin=True
+        user_obj.usertype=5
         user_obj.save(using=self._db)
         return user_obj
 
