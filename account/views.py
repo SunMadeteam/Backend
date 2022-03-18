@@ -55,6 +55,10 @@ class RegisterStaffAPIView(generics.ListCreateAPIView):
         DjangoFilterBackend,
         filters.SearchFilter,
     )
+
+class UpdateStaffAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
     
     '''
     def get(self, request, format=None):
