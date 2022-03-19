@@ -38,7 +38,7 @@ urlpatterns = [
     path('products/<int:pk>/', shop_views.Product_DetailView.as_view(), name='product_detail'),
     #path('products/<str:search>/', shop_views.ProductSearch.as_view(), name='product'),
     path('category/<int:pk>/', shop_views.Category_DetailView.as_view(), name='category'),
-    path('delivery/<int:pk>/', shop_views.Delivery_by_statusView.as_view(), name='delivery'),
-    path('api/delivery/<int:pk>/', shop_views.DeliveryView.as_view(), name='delivery'),
+    path('delivery/<int:pk>/', shop_views.DeliveryUpdateDeleteView.as_view(), name='delivery'),
+    #path('api/delivery/<int:pk>/', shop_views.DeliveryView.as_view(), name='delivery'),
 
 ]

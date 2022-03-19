@@ -132,6 +132,9 @@ REST_FRAMEWORK = {
         #'rest_framework.permissions.AllowAny'
     ),    
 }
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

@@ -2,7 +2,8 @@ from account.models import User
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
-
+import datetime
+from django.utils import timezone
          
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -22,8 +23,8 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     image = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    CHOICES = ((1,'easy'),(2,'middle'), (3,'hard'))
-    complexity_of_care= models.IntegerField(choices=CHOICES, default=None, null=True)
+    CHOICES = (('easy','easy'),('middle','middle'), ('hard','hard'))
+    complexity_of_care= models.CharField(choices=CHOICES, default=None, null=True, max_length=20)
     florist = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
     hight= models.DecimalField(max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     quantity= models.IntegerField(null=True, default=None)
@@ -48,8 +49,8 @@ class Cart_detail(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
-    CHOICES = ((1,'new'),(2,'processed'), (3,'completed'))
-    status=models.IntegerField(choices=CHOICES, default=1)
+    CHOICES = (('new','new'),('processed','processed'), ('completed','completed'))
+    status=models.CharField(choices=CHOICES, default='new',max_length=20)
     total_sum=models.IntegerField(default=0)
     date=models.DateField(auto_now_add=True, null=True)
 
@@ -62,8 +63,8 @@ class Delivery(models.Model):
     adress = models.TextField()
     runner = models.ForeignKey(User, on_delete=models.CASCADE)
     total_cost= models.IntegerField(default=None, null=True)
-    CHOICES = ((1,'accepted'),(2,'took'), (3,'completed'), (4, 'on the way'), (5,'delivered'), (6, 'completed'))
-    status=models.IntegerField(choices=CHOICES, default=None, null=True)
+    CHOICES = (('accepted','accepted'),('took','took'), ('completed','completed'), ('on the way', 'on the way'), ('delivered','delivered'), ('completed', 'completed'))
+    status=models.CharField(choices=CHOICES, default=None, null=True,max_length=20)
     date=models.DateField(auto_now_add=True, null=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, default=None, null=True)
     number = models.CharField(max_length=13, blank=True, null=True)

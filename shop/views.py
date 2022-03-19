@@ -12,6 +12,9 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+
+import django_filters
+from django_filters import DateFilter
 class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()   
@@ -19,11 +22,12 @@ class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
 class ProductView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    search_fields = ["name", "hight"]
-    filter_backends = (
-        DjangoFilterBackend,
+    search_fields = ["name"]#, "hight"]
+    filterset_fields = ['hight']
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
-    )
+    ]
 class Category_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -36,19 +40,32 @@ class FavoritesView(generics.ListCreateAPIView):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
 
-class Delivery_by_statusView(generics.RetrieveUpdateDestroyAPIView):
+class DeliveryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all() 
+    
+class DateFilter(django_filters.FilterSet):
+    #month = django_filters.NumberFilter(field_name='date', lookup_expr='month')
+    start_date=DateFilter(field_name='date', lookup_expr=('gte'),)
+    end_date=DateFilter(field_name='date', lookup_expr=('lte'))
+    class Meta:
+        model = Delivery
+        fields = ['date']
 
 
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
-    search_fields = ["date", "status", "order__user__number", "order__id"]
-    filter_backends = (
-        DjangoFilterBackend,
+    search_fields = ["order__user__number", "order__id"]
+    filterset_fields = ['status']
+    
+    filter_class = DateFilter
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
-    )
+    ]
+
+
 class CartView(generics.ListCreateAPIView):
     serializer_class = CartSerializer
     queryset = Cart.objects.all()
@@ -64,12 +81,34 @@ class Order_detailView(generics.ListCreateAPIView):
 class OrderView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-    search_fields = ["user__number", "status"]
-    filter_backends = (
-        DjangoFilterBackend,
+    search_fields = ["user__number"]#, "status"]
+    filterset_fields = ["status"]
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
-    )
-    
+    ]
+
+class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    pass
+
+class MonthlyOrdersTotal(APIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+
+    def get(self, request):
+        courier = Employee.objects.get(user=request.user)
+        data = (
+            self.queryset.filter(courier_status="Delivered", courier=courier)
+            .annotate(month=TruncMonth("date_created"))
+            .values("month")
+            .annotate(total_orders=Count("id"))
+        )
+        return Response(data)
+'''
+class Order_filter(generics.ListCreateAPIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.filter(date<=)
+'''
 '''
 class Product_DetailView(APIView):
     def get(self, request, pk):

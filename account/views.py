@@ -50,7 +50,9 @@ class IsAdminUser(BasePermission):
 class RegisterStaffAPIView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.filter(is_staff=True, is_admin=False)
-    search_fields = ["number", "is_active", "usertype"]
+    search_fields = ["number"]
+    filterset_fields = [ "is_active", "usertype"]
+    filterset_fields
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -59,7 +61,7 @@ class RegisterStaffAPIView(generics.ListCreateAPIView):
 class UpdateStaffAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    
+
     '''
     def get(self, request, format=None):
         user = User.objects.filter(is_staff=True, is_admin=False)
