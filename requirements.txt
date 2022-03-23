@@ -12,3 +12,4 @@ djoser
 python-decouple==3.1
 django-cors-headers==3.11.0
 django-filter==21.1
+drf-extra-fields==3.2.1

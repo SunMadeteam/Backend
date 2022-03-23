@@ -36,9 +36,10 @@ urlpatterns = [
     path('api/favorites/', shop_views.FavoritesView.as_view()),
     path('api/delivery/', shop_views.DeliveryView.as_view()),
     path('products/<int:pk>/', shop_views.Product_DetailView.as_view(), name='product_detail'),
-    #path('products/<str:search>/', shop_views.ProductSearch.as_view(), name='product'),
+    path('statistic/', shop_views.StatisticView.as_view()),
     path('category/<int:pk>/', shop_views.Category_DetailView.as_view(), name='category'),
     path('delivery/<int:pk>/', shop_views.DeliveryUpdateDeleteView.as_view(), name='delivery'),
+    #path('statisticbyorder/', shop_views.StatisticView.as_view())
     #path('api/delivery/<int:pk>/', shop_views.DeliveryView.as_view(), name='delivery'),
 
 ]

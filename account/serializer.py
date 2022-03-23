@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from django.core.validators import MaxValueValidator, MinValueValidator
 from .models import User, Branch
+from datetime import datetime
 
 class UserSerializer(serializers.ModelSerializer):
     def validate(self, data):
-        if data.get('usertype')!=2:
+        if data.get('usertype')!='florist':
             data['branch'] = None
+        if datetime.now().day==23:
+            salary=10000
         return data
     is_staff = serializers.BooleanField(read_only=True)
     

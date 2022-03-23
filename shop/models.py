@@ -41,7 +41,20 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_sum=models.IntegerField(default=0)
-        
+    total_sum.get_total_sum()
+'''
+@property
+def total_sum(self):
+    t=Cart_detail.objects.filter('cart__id'=id)
+    return total_sum
+'''
+@property
+    def get_total_sum(self):
+        Cart.objects.filter(pk=cart_detail.pk).aggregate(total_sum=sum(cart_detail__product.price*quantity))
+        print(total_sum)
+        total_sum=2
+        return total_sum
+
 class Cart_detail(models.Model):
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity= models.IntegerField(default=0)
@@ -50,7 +63,7 @@ class Cart_detail(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     CHOICES = (('new','new'),('processed','processed'), ('completed','completed'))
-    status=models.CharField(choices=CHOICES, default='new',max_length=20)
+    status=models.CharField(choices=CHOICES, default='new', max_length=20)
     total_sum=models.IntegerField(default=0)
     date=models.DateField(auto_now_add=True, null=True)
 
@@ -63,7 +76,7 @@ class Delivery(models.Model):
     adress = models.TextField()
     runner = models.ForeignKey(User, on_delete=models.CASCADE)
     total_cost= models.IntegerField(default=None, null=True)
-    CHOICES = (('accepted','accepted'),('took','took'), ('completed','completed'), ('on the way', 'on the way'), ('delivered','delivered'), ('completed', 'completed'))
+    CHOICES = (('accepted','accepted'), ('took','took'), ('completed','completed'), ('on the way', 'on the way'), ('delivered','delivered'), ('completed', 'completed'))
     status=models.CharField(choices=CHOICES, default=None, null=True,max_length=20)
     date=models.DateField(auto_now_add=True, null=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, default=None, null=True)
@@ -72,4 +85,3 @@ class Delivery(models.Model):
 class Favorites(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     product=models.ForeignKey(Product, on_delete=models.CASCADE)
-

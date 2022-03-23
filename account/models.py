@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager)
+from shop.models import Cart, Delivery
 
 class UserManager(BaseUserManager):
     def create_superuser(self, number, password=None, usertype=5):
@@ -41,7 +42,7 @@ class User(AbstractBaseUser):
     is_staff=models.BooleanField(default=True)
     is_admin=models.BooleanField(default=False)
     is_active= models.BooleanField(default=True)
-    CHOICES = ( ('admin','admin'),('florist','florist'), ('runner','runner'), ('client', 'client'), ('superuser', 'superuser'))
+    CHOICES = (('admin','admin'),('florist','florist'),('runner','runner'),('client', 'client'),('superuser', 'superuser'))
     usertype = models.CharField(choices=CHOICES, default='client', max_length=20)
     photo = models.TextField(default=None, null=True)
     salary = models.IntegerField(default=None, null=True)
@@ -50,6 +51,14 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = [] 
 
     objects=UserManager()
+
+@property
+def salary(self):
+    if usertype=='florist':
+        salary=salary+Cart.total_sum*0.15
+    if usertype=='runner':
+        salary=salary+Delivery.total_cost*0.1
+    return salary
 
 class ConfirmCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

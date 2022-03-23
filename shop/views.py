@@ -23,7 +23,7 @@ class ProductView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     search_fields = ["name"]#, "hight"]
-    filterset_fields = ['hight']
+    filterset_fields = ['hight', 'category']
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
@@ -45,20 +45,19 @@ class DeliveryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Delivery.objects.all() 
     
 class DateFilter(django_filters.FilterSet):
-    #month = django_filters.NumberFilter(field_name='date', lookup_expr='month')
     start_date=DateFilter(field_name='date', lookup_expr=('gte'),)
     end_date=DateFilter(field_name='date', lookup_expr=('lte'))
     class Meta:
         model = Delivery
-        fields = ['date']
+        fields = ['date', 'status']
 
 
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
     search_fields = ["order__user__number", "order__id"]
-    filterset_fields = ['status']
-    
+    filterset_fields = ['status', 'data']
+
     filter_class = DateFilter
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
@@ -74,9 +73,23 @@ class Cart_detailView(generics.ListCreateAPIView):
     serializer_class = Cart_detailSerializer
     queryset = Cart_detail.objects.all()
 
-class Order_detailView(generics.ListCreateAPIView):
-    serializer_class = Order_detailSerializer
-    queryset = Order_detail.objects.all()
+#class TotalSumCart(APIView):
+@property
+def total_sum(self, request, pk):
+    serializer = Cart_detailSerializer(Cart_detail.objects.filter(cart__id=pk), manu=True)
+    total_sum=serializer__product__price*quantity
+    print(total_sum)
+    #return self.total_sum
+    #return Response({"id": serializer.id,'name':serializer.name, 'user': str(request.user), 'auth': str(request.auth)})
+ 
+class StatisticView(APIView):
+    def get(self, request):
+        allobj=Order_detail.objects.all().count()
+        l={}
+        for i in Category.objects.all():
+            l[i.name]=round((Order_detail.objects.filter(product__category=i.id).count()/allobj)*100)
+        print(l)
+        return Response(data=l)
 
 class OrderView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
@@ -91,24 +104,15 @@ class OrderView(generics.ListCreateAPIView):
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     pass
 
-class MonthlyOrdersTotal(APIView):
-    serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+class Order_detailView(generics.ListCreateAPIView):
+    serializer_class = Order_detailSerializer
+    queryset = Order_detail.objects.all()
+    filterset_fields = ['product__category__name', 'order__user__id']
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+        filters.SearchFilter,
+    ]
 
-    def get(self, request):
-        courier = Employee.objects.get(user=request.user)
-        data = (
-            self.queryset.filter(courier_status="Delivered", courier=courier)
-            .annotate(month=TruncMonth("date_created"))
-            .values("month")
-            .annotate(total_orders=Count("id"))
-        )
-        return Response(data)
-'''
-class Order_filter(generics.ListCreateAPIView):
-    serializer_class = OrderSerializer
-    queryset = Order.objects.filter(date<=)
-'''
 '''
 class Product_DetailView(APIView):
     def get(self, request, pk):
