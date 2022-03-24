@@ -5,10 +5,11 @@ from datetime import datetime
 
 class UserSerializer(serializers.ModelSerializer):
     def validate(self, data):
-        if data.get('usertype')!='florist':
+        if data.get('usertype')!="florist":
             data['branch'] = None
-        if datetime.now().day==23:
-            salary=10000
+        print(datetime.now().day)
+        if datetime.now().day==24:
+            data['salary']=10000
         return data
     is_staff = serializers.BooleanField(read_only=True)
     

@@ -41,15 +41,9 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_sum=models.IntegerField(default=0)
-    total_sum.get_total_sum()
-'''
-@property
-def total_sum(self):
-    t=Cart_detail.objects.filter('cart__id'=id)
-    return total_sum
-'''
-@property
-    def get_total_sum(self):
+    
+    @property
+    def total_sum(self):
         Cart.objects.filter(pk=cart_detail.pk).aggregate(total_sum=sum(cart_detail__product.price*quantity))
         print(total_sum)
         total_sum=2

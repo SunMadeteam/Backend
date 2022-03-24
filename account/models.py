@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager)
-from shop.models import Cart, Delivery
+#from shop.models import Cart, Delivery, Product, Order_detail
 
 class UserManager(BaseUserManager):
     def create_superuser(self, number, password=None, usertype=5):
@@ -51,19 +51,12 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = [] 
 
     objects=UserManager()
-
+'''
 @property
 def salary(self):
     if usertype=='florist':
-        salary=salary+Cart.total_sum*0.15
+        salary=salary+Product.price*0.15
     if usertype=='runner':
         salary=salary+Delivery.total_cost*0.1
     return salary
-
-class ConfirmCode(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=4)
-    valid_until = models.DateTimeField()
-
-    def __str__(self):
-        return self.code
+'''
