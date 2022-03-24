@@ -45,7 +45,7 @@ class User(AbstractBaseUser):
     CHOICES = (('admin','admin'),('florist','florist'),('runner','runner'),('client', 'client'),('superuser', 'superuser'))
     usertype = models.CharField(choices=CHOICES, default='client', max_length=20)
     photo = models.TextField(default=None, null=True)
-    salary = models.IntegerField(default=None, null=True)
+    salary = models.IntegerField(default=10000)
     branch=models.ForeignKey(Branch, on_delete=models.DO_NOTHING, null=True, blank=True)
     USERNAME_FIELD = 'number'
     REQUIRED_FIELDS = [] 

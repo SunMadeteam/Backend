@@ -57,9 +57,10 @@ class Cart_detail(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     CHOICES = (('new','new'),('processed','processed'), ('completed','completed'))
-    status=models.CharField(choices=CHOICES, default='new', max_length=20)
+    status=models.CharField(choices=CHOICES, default=None, null=True, max_length=20)
     total_sum=models.IntegerField(default=0)
     date=models.DateField(auto_now_add=True, null=True)
+    
 
 class Order_detail(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)
