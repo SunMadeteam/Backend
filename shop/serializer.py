@@ -27,11 +27,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class DeliverySerializer(serializers.ModelSerializer):
-    '''
-    def validate(self, data):
-        data['date'] = datetime.now()
-        return data
-    '''
+
     def create(self, validated_data):
         return Delivery.objects.create(**validated_data)
 
@@ -76,16 +72,26 @@ class Cart_detailSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
+    total_summ = serializers.ReadOnlyField()
+
     def create(self, validated_data):
         return Cart.objects.create(**validated_data)
+    
     def update(self, instance, validated_data):
         instance.user = validated_data.get('user', instance.user)
-        instance.total_sum = validated_data.get('total_sum', instance.total_sum)
+        #instance.total_sum = validated_data.get('total_sum', instance.total_sum)
         instance.save()
         return instance
+    
     class Meta:
         model=Cart
-        fields=( 'id', 'user','total_sum')
+        fields=( 'id', 'user','total_summ',)
+        # read_only_fields = ['total_summ',]
+    
+    # @staticmethod
+    # def get_total_sum(obj):
+
+
 
 class Order_detailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -102,18 +108,20 @@ class Order_detailSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    total_sum = serializers.ReadOnlyField()
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
     def update(self, instance, validated_data):
         instance.user = validated_data.get('user', instance.user)
         instance.status=validated_data.get('status', instance.status)
-        instance.total_sum = validated_data.get('total_sum', instance.total_sum)
+        #instance.total_sum = validated_data.get('total_sum', instance.total_sum)
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance
     class Meta:
         model=Order
         fields=( 'id', 'user','total_sum','date', 'status')
+    
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:

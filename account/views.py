@@ -13,7 +13,7 @@ from .models import User,Branch
 from rest_framework.permissions import BasePermission
 from .serializer import BranchSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
-
+from shop.models import Delivery
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -32,9 +32,7 @@ class RegisterAPIView(APIView):
             is_staff=False
             #photo=photo,
         )
-        code = str(random.randint(1000,9999))
         valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
-        ConfirmCode.objects.create(user=user, code=code, valid_until=valid_until)
         # send_code_to_phone(code,username)
         return Response(data={'message': 'User created!!!'})
     
@@ -58,6 +56,7 @@ class RegisterStaffAPIView(generics.ListCreateAPIView):
         filters.SearchFilter,
     )
 
+    
 class UpdateStaffAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()

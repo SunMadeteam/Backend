@@ -11,7 +11,7 @@ from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-
+from account.models import User
 
 import django_filters
 from django_filters import DateFilter
@@ -28,6 +28,7 @@ class ProductView(generics.ListCreateAPIView):
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
+
 class Category_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -49,14 +50,14 @@ class DateFilter(django_filters.FilterSet):
     end_date=DateFilter(field_name='date', lookup_expr=('lte'))
     class Meta:
         model = Delivery
-        fields = ['date', 'status']
+        fields = ['date', 'status', 'runner__id' ]
 
 
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
     search_fields = ["order__user__number", "order__id"]
-    filterset_fields = ['status', 'data']
+    filterset_fields = ['status', 'date', 'runner__id']
 
     filter_class = DateFilter
     filter_backends = [
@@ -64,6 +65,13 @@ class DeliveryView(generics.ListCreateAPIView):
         filters.SearchFilter,
     ]
 
+    def post(self, request):
+        order=get_object_or_404(Order.objects.all(),pk=request.data.get('order'))
+        runner=get_object_or_404(User.objects.all(), pk=request.data.get('runner'))
+        runner.salary+=order.total_sum/10
+        runner.save()
+        print('{}: {}'.format(runner.id,runner.salary))
+        return Response({'Delivery': ''})
 
 class CartView(generics.ListCreateAPIView):
     serializer_class = CartSerializer

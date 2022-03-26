@@ -4,6 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 import datetime
 from django.utils import timezone
+from django.shortcuts import render, get_object_or_404
+
          
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -40,31 +42,56 @@ class Product(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_sum=models.IntegerField(default=0)
+    #total_sum=models.IntegerField(default=0, null=True)
     
+    # def save(self, *args, **kwargs):
+    #     cart_detail = Cart_detail.objects.filter(cart=self.pk)
+    #     self.total_sum += cart_detail.product.price * cart_detail.quantity
+    #     super().save(*args, **kwargs)
+
     @property
-    def total_sum(self):
-        Cart.objects.filter(pk=cart_detail.pk).aggregate(total_sum=sum(cart_detail__product.price*quantity))
-        print(total_sum)
-        total_sum=2
-        return total_sum
+    def total_summ(self):
+        cart_detail = Cart_detail.objects.filter(cart=self.pk)
+        total = 0
+        for a in cart_detail:
+            total += a.product.price * a.quantity
+        return total
+
+
 
 class Cart_detail(models.Model):
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
-    quantity= models.IntegerField(default=0)
+    quantity= models.IntegerField(default=1)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     CHOICES = (('new','new'),('processed','processed'), ('completed','completed'))
     status=models.CharField(choices=CHOICES, default=None, null=True, max_length=20)
-    total_sum=models.IntegerField(default=0)
+    #total_sum=models.IntegerField(default=0)
     date=models.DateField(auto_now_add=True, null=True)
     
+    @property
+    def total_sum(self):
+        order_detail = Order_detail.objects.filter(order=self.pk)
+        total = 0
+        for a in order_detail:
+            total += a.product.price * a.quantity
+        return total
+        '''
+    def save(self, *args, **kwargs):
+        order_detail = Order_detail.objects.filter(order=self.pk)
+        total = 0
+        for a in order_detail:
+            total += a.product.price * a.quantity
+        print(total)
+        self.total_sum = total
+        super().save(*args, **kwargs)
+'''
 
 class Order_detail(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, default=None, null=True)
-    quantity= models.IntegerField(default=0)
+    quantity= models.IntegerField(default=1)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Delivery(models.Model):
@@ -76,6 +103,10 @@ class Delivery(models.Model):
     date=models.DateField(auto_now_add=True, null=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, default=None, null=True)
     number = models.CharField(max_length=13, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.total_cost = self.order.total_sum+round(self.order.total_sum/10)
+        super().save(*args, **kwargs)
 
 class Favorites(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
