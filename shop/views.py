@@ -15,6 +15,9 @@ from account.models import User
 
 import django_filters
 from django_filters import DateFilter
+
+from django.db.models import Count
+
 class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()   
@@ -52,25 +55,37 @@ class DateFilter(django_filters.FilterSet):
         model = Delivery
         fields = ['date', 'status', 'runner__id' ]
 
+class Delivered_by(APIView):
+    def get(self, request, pk):
+        serializer = DeliverySerializer(Delivery.objects.all().filter(runner=pk), many=True)
+        d=Delivery.objects.values('date').annotate(delivery_count=Count('id'))
+        print(d)
+        return Response({"deliveries": d, 'user': str(request.user), 'auth': str(request.auth)})
+
 
 class DeliveryView(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all()
     search_fields = ["order__user__number", "order__id"]
     filterset_fields = ['status', 'date', 'runner__id']
-
     filter_class = DateFilter
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
-
     def post(self, request):
         order=get_object_or_404(Order.objects.all(),pk=request.data.get('order'))
+        #print(order)
         runner=get_object_or_404(User.objects.all(), pk=request.data.get('runner'))
         runner.salary+=order.total_sum/10
+        order_detail=Order_detail.objects.filter(order__pk=order.pk)
+        #print(order_detail)
+        for i in order_detail:
+            i.product.florist.salary+=i.product.price*15/100
+            i.product.florist.save()
+            #print(i.product.florist.salary)
         runner.save()
-        print('{}: {}'.format(runner.id,runner.salary))
+        #print('{}: {}'.format(runner.id,runner.salary))
         return Response({'Delivery': ''})
 
 class CartView(generics.ListCreateAPIView):
@@ -110,7 +125,12 @@ class OrderView(generics.ListCreateAPIView):
     ]
 
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    pass
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all() 
+
+class Order_detailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = Order_detailSerializer
+    queryset = Order_detail.objects.all()
 
 class Order_detailView(generics.ListCreateAPIView):
     serializer_class = Order_detailSerializer
@@ -120,6 +140,7 @@ class Order_detailView(generics.ListCreateAPIView):
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
+
 
 '''
 class Product_DetailView(APIView):
