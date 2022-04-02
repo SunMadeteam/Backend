@@ -24,7 +24,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     description = models.TextField(blank=True)
     image = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.IntegerField(default=0)
     CHOICES = (('easy','easy'),('middle','middle'), ('hard','hard'))
     complexity_of_care= models.CharField(choices=CHOICES, default=None, null=True, max_length=20)
     florist = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
