@@ -4,6 +4,7 @@ from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_d
 import datetime
 from account.models import User
 from drf_extra_fields.relations import PresentablePrimaryKeyRelatedField
+from account.serializer import BranchSerializer, UserSerializer
 
 class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -22,11 +23,8 @@ class ProductCategory(serializers.ModelSerializer):
         model=Category
         fields=('name')
 
-class PrintUser(serializers.ModelSerializer):
-    class Meta:
-        model=User
-        fields='__all__'
-        
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category=PresentablePrimaryKeyRelatedField(queryset=Category.objects.all(), presentation_serializer=CategorySerializer)
     def create(self, validated_data):
@@ -50,9 +48,13 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields = ('id', 'name','complexity_of_care','description','florist','price','category', 'hight', 'image','quantity')
 
+class PrintUser(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields='__all__'
 
 class DeliverySerializer(serializers.ModelSerializer):
-
+    runner=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='runner'), presentation_serializer=UserSerializer)
     def create(self, validated_data):
         return Delivery.objects.create(**validated_data)
 
@@ -121,6 +123,7 @@ class Order_detailSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    user=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='client'), presentation_serializer=UserSerializer)
     total_sum = serializers.ReadOnlyField()
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
