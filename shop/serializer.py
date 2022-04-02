@@ -2,8 +2,28 @@ from rest_framework import serializers
 from django.core.validators import MaxValueValidator, MinValueValidator
 from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
 import datetime
+#from account.models import User
+from drf_extra_fields.relations import PresentablePrimaryKeyRelatedField
+
+class CategorySerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.image= validated_data.get('image', instance.name)
+        instance.save()
+        return instance
+    class Meta:
+        model=Category
+        fields = ('id', 'name', 'image')
+
+class ProductCategory(serializers.ModelSerializer):
+    class Meta:
+        model=Category
+        fields=('name')
 
 class ProductSerializer(serializers.ModelSerializer):
+    category=PresentablePrimaryKeyRelatedField(queryset=Category.objects.all(), presentation_serializer=CategorySerializer)
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
 
@@ -44,17 +64,6 @@ class DeliverySerializer(serializers.ModelSerializer):
         model=Delivery
         fields = ('id','runner','total_cost','status', 'date', 'order')
 
-class CategorySerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        return Category.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.image= validated_data.get('image', instance.name)
-        instance.save()
-        return instance
-    class Meta:
-        model=Category
-        fields = ('id', 'name', 'image')
 
 class Cart_detailSerializer(serializers.ModelSerializer):
     class Meta:
