@@ -131,10 +131,10 @@ class OrderView(generics.ListCreateAPIView):
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
-    def get(self, request):
+'''    def get(self, request):
         serializer=OrderSerializer(Order.objects.all().values_list('user__number', 'user__name'), many=True)
         return Response({"order": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
-
+'''
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all() 

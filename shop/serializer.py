@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.core.validators import MaxValueValidator, MinValueValidator
 from .models import Category, Product,Cart, Cart_detail,Delivery, Order, Order_detail, Favorites
 import datetime
-#from account.models import User
+from account.models import User
 from drf_extra_fields.relations import PresentablePrimaryKeyRelatedField
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -22,6 +22,11 @@ class ProductCategory(serializers.ModelSerializer):
         model=Category
         fields=('name')
 
+class PrintUser(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields='__all__'
+        
 class ProductSerializer(serializers.ModelSerializer):
     category=PresentablePrimaryKeyRelatedField(queryset=Category.objects.all(), presentation_serializer=CategorySerializer)
     def create(self, validated_data):
