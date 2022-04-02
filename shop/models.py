@@ -68,6 +68,9 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     CHOICES = (('new','new'),('processed','processed'), ('completed','completed'))
     status=models.CharField(choices=CHOICES, default=None, null=True, max_length=20)
+    adress = models.TextField(null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    number = models.CharField(max_length=13, blank=True, unique=True, null=True)
     #total_sum=models.IntegerField(default=0)
     date=models.DateField(auto_now_add=True, null=True)
     
@@ -95,7 +98,6 @@ class Order_detail(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 class Delivery(models.Model):
-    adress = models.TextField()
     runner = models.ForeignKey(User, on_delete=models.CASCADE)
     total_cost= models.IntegerField(default=None, null=True)
     CHOICES = (('accepted','accepted'), ('took','took'), ('completed','completed'), ('on the way', 'on the way'), ('delivered','delivered'), ('completed', 'completed'))

@@ -50,7 +50,6 @@ class RegisterStaffAPIView(generics.ListCreateAPIView):
     queryset = User.objects.filter(is_staff=True, is_admin=False)
     search_fields = ["number"]
     filterset_fields = [ "is_active", "usertype"]
-    filterset_fields
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,

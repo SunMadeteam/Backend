@@ -32,7 +32,6 @@ class DeliverySerializer(serializers.ModelSerializer):
         return Delivery.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.adress = validated_data.get('adress', instance.adress)
         instance.runner = validated_data.get('runner', instance.runner)
         instance.total_cost = validated_data.get('total_cost', instance.total_cost)
         instance.status=validated_data.get('status', instance.status)
@@ -43,7 +42,7 @@ class DeliverySerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Delivery
-        fields = ('id','adress','runner','total_cost','status', 'date', 'order')
+        fields = ('id','runner','total_cost','status', 'date', 'order')
 
 class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -112,15 +111,18 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
     def update(self, instance, validated_data):
+        instance.adress = validated_data.get('adress', instance.adress)
         instance.user = validated_data.get('user', instance.user)
         instance.status=validated_data.get('status', instance.status)
         #instance.total_sum = validated_data.get('total_sum', instance.total_sum)
         instance.date = validated_data.get('date', instance.date)
+        instance.name = validated_data.get('name', instance.name)
+        instance.number = validated_data.get('number', instance.number)
         instance.save()
         return instance
     class Meta:
         model=Order
-        fields=( 'id', 'user','total_sum','date', 'status')
+        fields=['id', 'user','total_sum','date', 'status','name','adress', 'number']
     
 
 class FavoritesSerializer(serializers.ModelSerializer):

@@ -55,11 +55,19 @@ class DateFilter(django_filters.FilterSet):
         model = Delivery
         fields = ['date', 'status', 'runner__id' ]
 
-class Delivered_by(APIView):
+class Delivered_by(generics.ListCreateAPIView):
+    serializer_class = DeliverySerializer
+    queryset = Delivery.objects.all()
+    filter_class = DateFilter
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+        filters.SearchFilter,
+    ]
+    
     def get(self, request, pk):
         serializer = DeliverySerializer(Delivery.objects.all().filter(runner=pk), many=True)
         d=Delivery.objects.values('date').annotate(delivery_count=Count('id'))
-        print(d)
+        
         return Response({"deliveries": d, 'user': str(request.user), 'auth': str(request.auth)})
 
 
@@ -123,6 +131,9 @@ class OrderView(generics.ListCreateAPIView):
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
+    def get(self, request):
+        serializer=OrderSerializer(Order.objects.all().values_list('user__number', 'user__name'), many=True)
+        return Response({"order": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
 
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer

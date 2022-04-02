@@ -224,5 +224,5 @@ CORS_ALLOWED_ORIGINS=[
     "https://sunmadebackend.herokuapp.com",
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://sunmadesaule.netlify.app"
+    "https://sunmadesaule.netlify.app",
 ]
