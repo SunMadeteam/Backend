@@ -18,12 +18,19 @@ from django.urls import path
 from django.conf import settings
 from account import views as account_views
 from shop import views as shop_views
+# from rest_framework.routers import SimpleRouter
+
+# router = SimpleRouter()
+
+# router.register('api1/v1/updatestaff/', account_views.UpdateStaffAPIView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 	path('api1/v1/register/', account_views.RegisterAPIView.as_view()),
     path('api1/v1/registerstaff/', account_views.RegisterStaffAPIView.as_view()),
     path('api1/v1/registerstaff/<int:pk>/', account_views.UpdateStaffAPIView.as_view()),
+    path('api1/v1/changepassword/', account_views.PasswordChange.as_view()),
+
     path('api1/v1/login/', account_views.LoginAPIView.as_view()),
     path('api1/v1/branch/', account_views.BranchAPIView.as_view()),
 

@@ -109,7 +109,7 @@ class Cart_detailView(generics.ListCreateAPIView):
 def total_sum(self, request, pk):
     serializer = Cart_detailSerializer(Cart_detail.objects.filter(cart__id=pk), manu=True)
     total_sum=serializer__product__price*quantity
-    print(total_sum)
+    #print(total_sum)
     #return self.total_sum
     #return Response({"id": serializer.id,'name':serializer.name, 'user': str(request.user), 'auth': str(request.auth)})
  

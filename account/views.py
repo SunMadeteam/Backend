@@ -11,13 +11,15 @@ from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 from .models import User,Branch
 from rest_framework.permissions import BasePermission
-from .serializer import BranchSerializer, UserSerializer
+from .serializer import BranchSerializer, UserSerializer, ChangePassword
 from django.shortcuts import get_object_or_404
 from shop.models import Delivery
-from rest_framework import generics
+from rest_framework import generics, mixins
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.viewsets import GenericViewSet
+
 
 class RegisterAPIView(APIView):
     def post(self,request):
@@ -54,7 +56,26 @@ class RegisterStaffAPIView(generics.ListCreateAPIView):
         DjangoFilterBackend,
         filters.SearchFilter,
     )
-
+'''
+    def post(self,request):
+        name=request.data.get('name')
+        number=request.data.get('number')
+        password = request.data.get('password')
+        usertype = request.data.get('usertype')
+        branch=request.data.get('branch')
+        user = User.objects.create_user(
+            number=number,
+            password=password,
+            name=name,
+            is_staff=True,
+            usertype=usertype,
+            branch=branch
+        )
+        valid_until = datetime.datetime.now() + datetime.timedelta(minutes=5)
+        # send_code_to_phone(code,username)
+        return Response(data={'message': 'Staff created!!!'})
+    
+'''
     
 class UpdateStaffAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
@@ -73,13 +94,29 @@ class UpdateStaffAPIView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     '''  
 
+class PasswordChange(APIView):
+    serializer_class = ChangePassword
+    queryset = User.objects.all()
+    # permission_classes = (IsSuperuser, )
+
+    def post(self, request):
+        number = request.data["number"]
+        password = request.data["password"]
+
+        user = User.objects.filter(number=number).first()
+        user.set_password(password)
+        user.save()
+        return Response({"статус": ("Пароль успешно изменён")})
+ 
+
+
 class LoginAPIView(APIView):
     def post(self, request):
         number = request.data.get('number')
         password = request.data.get('password')
-        print(number, password)
+        #print(number, password)
         user = authenticate(username = number, password=password)
-        print(user)
+        #print(user)
         if user:
             Token.objects.filter(user=user).delete()
             token = Token.objects.create(user=user)

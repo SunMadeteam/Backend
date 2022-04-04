@@ -26,7 +26,8 @@ class UserBranch(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     branch=PresentablePrimaryKeyRelatedField(queryset=Branch.objects.all(), presentation_serializer=BranchSerializer)
-    
+    is_staff = serializers.BooleanField(read_only=True)
+
     def validate(self, data):
         if data.get('usertype')!="florist":
             data['branch'] = None
@@ -34,9 +35,23 @@ class UserSerializer(serializers.ModelSerializer):
         if datetime.now().day==24:
             data['salary']=10000
         return data
-    is_staff = serializers.BooleanField(read_only=True)
     
     class Meta:
         model=User
-        fields = ('id', 'name','username','number','is_staff','is_active','is_admin','usertype', 'photo', 'salary', 'branch')
+        fields = ('id', 'name', 'password', 'username','number','is_staff','is_active','is_admin','usertype', 'photo', 'salary', 'branch')
 
+    def create(self, validated_data):
+        user = User.objects.create(
+            number=validated_data['number'],
+            name=validated_data['name'],
+        )
+        user.set_password(validated_data['password'])
+        #user.is_staff = validated_data['is_staff']
+        #user.usertype = validated_data['usertype']
+        user.save()
+        return user
+
+class ChangePassword(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['number','password']
