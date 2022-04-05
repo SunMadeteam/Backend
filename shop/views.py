@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 from rest_framework.decorators import api_view
@@ -8,11 +9,11 @@ from .models import Category, Product,Cart, Cart_detail, Delivery, Order, Order_
 from .serializer import CategorySerializer, ProductSerializer,CartSerializer, Cart_detailSerializer,DeliverySerializer, OrderSerializer, Order_detailSerializer, FavoritesSerializer
 from django.shortcuts import get_list_or_404
 from rest_framework import generics
-from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from account.models import User
 
+from rest_framework import filters
+from rest_framework.filters import SearchFilter
+from account.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 import django_filters
 from django_filters import DateFilter
 
@@ -44,6 +45,29 @@ class FavoritesView(generics.ListCreateAPIView):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
 
+
+class DateFilterOrder(django_filters.FilterSet):
+    start_date=DateFilter(field_name='date' , lookup_expr=('gte'))
+    end_date=DateFilter(field_name='date', lookup_expr=('lte'))
+    class Meta:
+        model= Order
+        fields=['date', 'status']
+
+class OrderView(generics.ListCreateAPIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    search_fields = ["user__number"]#, "status"]
+    filterset_fields = ['status', 'date']
+    filter_class = DateFilterOrder
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+        filters.SearchFilter,
+    ]
+'''    def get(self, request):
+        serializer=OrderSerializer(Order.objects.all().values_list('user__number', 'user__name'), many=True)
+        return Response({"order": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
+'''
+
 class DeliveryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DeliverySerializer
     queryset = Delivery.objects.all() 
@@ -54,6 +78,7 @@ class DateFilter(django_filters.FilterSet):
     class Meta:
         model = Delivery
         fields = ['date', 'status', 'runner__id' ]
+
 
 class Delivered_by(generics.ListCreateAPIView):
     serializer_class = DeliverySerializer
@@ -122,19 +147,7 @@ class StatisticView(APIView):
         print(l)
         return Response(data=l)
 
-class OrderView(generics.ListCreateAPIView):
-    serializer_class = OrderSerializer
-    queryset = Order.objects.all()
-    search_fields = ["user__number"]#, "status"]
-    filterset_fields = ["status"]
-    filter_backends = [
-        django_filters.rest_framework.DjangoFilterBackend,
-        filters.SearchFilter,
-    ]
-'''    def get(self, request):
-        serializer=OrderSerializer(Order.objects.all().values_list('user__number', 'user__name'), many=True)
-        return Response({"order": serializer.data, 'user': str(request.user), 'auth': str(request.auth)})
-'''
+
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all() 

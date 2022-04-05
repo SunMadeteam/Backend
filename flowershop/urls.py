@@ -50,4 +50,6 @@ urlpatterns = [
     path('api/order/<int:pk>/', shop_views.OrderUpdateDelete.as_view(), name='order'),
     path('api/order_detail/<int:pk>/', shop_views.Order_detailUpdateDelete.as_view(), name='order_detail'),
     path('delivery_by/<int:pk>/',shop_views.Delivered_by.as_view(), name='delivery'),
+    #path('order_by_date/',shop_views.OrderFilterByDate, name='order'),
+
 ]
