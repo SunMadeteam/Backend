@@ -106,9 +106,14 @@ class CartSerializer(serializers.ModelSerializer):
     # @staticmethod
     # def get_total_sum(obj):
 
+class ProductOrder_detail(serializers.ModelSerializer):
+    class Meta:
+        model=Product
+        fields='__all__'
 
 
 class Order_detailSerializer(serializers.ModelSerializer):
+    product=PresentablePrimaryKeyRelatedField(queryset=Product.objects.all(), presentation_serializer=ProductSerializer)
     class Meta:
         model = Order_detail 
         fields=('id','order', 'quantity', 'product')

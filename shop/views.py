@@ -146,7 +146,7 @@ class Order_detailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 class Order_detailView(generics.ListCreateAPIView):
     serializer_class = Order_detailSerializer
     queryset = Order_detail.objects.all()
-    filterset_fields = ['product__category__name', 'order__user__id']
+    filterset_fields = ['product__category__name', 'order__user__id', 'order']
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,

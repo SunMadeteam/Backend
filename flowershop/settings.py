@@ -226,4 +226,6 @@ CORS_ALLOWED_ORIGINS=[
     "http://localhost:3001",
     "https://sunmadesaule.netlify.app",
     "https://624b15a4be4c2d16878734db--optimistic-ardinghelli-678c4f.netlify.app",
+    "https://sunmade-3a3e9.web.app",
 ]
+
