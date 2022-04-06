@@ -219,7 +219,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
 }
-
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS=[
     "https://sunmadebackend.herokuapp.com",
     "http://localhost:3000",

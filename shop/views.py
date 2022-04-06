@@ -146,6 +146,16 @@ class StatisticView(APIView):
             l[i.name]=round((Order_detail.objects.filter(product__category=i.id).count()/allobj)*100)
         print(l)
         return Response(data=l)
+ 
+class SecondStatisticView(APIView):
+    def get(self, request):
+        orders=Order.objects.all()
+        allobj=Order.objects.all().count()
+        l={'понедельник':0, 'вторник':0, 'среда';0,'четверг':0,'пятница':0,'суббота':0,'воскресенье':0}
+        for i in orders:
+            l[i.date]
+        print(l)
+        return Response(data=l)
 
 
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
