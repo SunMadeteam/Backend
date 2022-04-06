@@ -33,6 +33,7 @@ urlpatterns = [
 
     path('api1/v1/login/', account_views.LoginAPIView.as_view()),
     path('api1/v1/branch/', account_views.BranchAPIView.as_view()),
+    path('api1/v1/branch_detail/<int:pk>/', account_views.Branch_DetailView.as_view()),
 
     path('api/products/', shop_views.ProductView.as_view()),
     path('api/categories/', shop_views.CategoryView.as_view()),

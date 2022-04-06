@@ -40,17 +40,21 @@ class UserSerializer(serializers.ModelSerializer):
         model=User
         fields = ('id', 'name', 'password', 'username','number','is_staff','is_active','is_admin','usertype', 'photo', 'salary', 'branch')
 
+
     def create(self, validated_data):
         user = User.objects.create(
             number=validated_data['number'],
             name=validated_data['name'],
+            #ais_staff = validated_data['is_staff'],
+            usertype = validated_data['usertype'],
+            branch=validated_data['branch']
         )
         user.set_password(validated_data['password'])
         #user.is_staff = validated_data['is_staff']
         #user.usertype = validated_data['usertype']
         user.save()
         return user
-
+    
 class ChangePassword(serializers.ModelSerializer):
     class Meta:
         model=User

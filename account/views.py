@@ -146,3 +146,7 @@ class BranchAPIView(generics.ListCreateAPIView):
     serializer_class = BranchSerializer
     queryset = Branch.objects.all()
 
+class Branch_DetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = BranchSerializer
+    queryset = Branch.objects.all()
+    
