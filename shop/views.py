@@ -151,7 +151,7 @@ class SecondStatisticView(APIView):
     def get(self, request):
         orders=Order.objects.all()
         allobj=Order.objects.all().count()
-        l={'понедельник':0, 'вторник':0, 'среда';0,'четверг':0,'пятница':0,'суббота':0,'воскресенье':0}
+        l={'понедельник':0, 'вторник':0, 'среда':0,'четверг':0,'пятница':0,'суббота':0,'воскресенье':0}
         for i in orders:
             l[i.date]
         print(l)
