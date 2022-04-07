@@ -18,6 +18,9 @@ import django_filters
 from django_filters import DateFilter
 
 from django.db.models import Count
+import datetime
+import time
+from datetime import datetime
 
 class Product_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
@@ -151,12 +154,12 @@ class SecondStatisticView(APIView):
     def get(self, request):
         orders=Order.objects.all()
         allobj=Order.objects.all().count()
-        l={'понедельник':0, 'вторник':0, 'среда':0,'четверг':0,'пятница':0,'суббота':0,'воскресенье':0}
+        l={1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0}
         for i in orders:
-            l[i.date]
-        print(l)
+            #l[i.date.strptime(weekday, "%u").tm_wday]+=1
+            print(str(i.date))
+            print(datetime.strptime(str(i.date), "%w"))
         return Response(data=l)
-
 
 class OrderUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer

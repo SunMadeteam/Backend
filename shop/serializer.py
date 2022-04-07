@@ -48,12 +48,62 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields = ('id', 'name','complexity_of_care','description','florist','price','category', 'hight', 'image','quantity')
 
+
+class ProductOrder_detail(serializers.ModelSerializer):
+    class Meta:
+        model=Product
+        fields='__all__'
+
+
+class Order_detailSerializer(serializers.ModelSerializer):
+    product=PresentablePrimaryKeyRelatedField(queryset=Product.objects.all(), presentation_serializer=ProductSerializer)
+    class Meta:
+        model = Order_detail 
+        fields=('id','order', 'quantity', 'product')
+    def create(self, validated_data):
+        return Order_detail.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance.order = validated_data.get('order', instance.order)
+        instance.product = validated_data.get('product', instance.product)
+        instance.quantity=validated_data.get('quantity', instance.quantity)
+        instance.save()
+        return instance
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    user=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='client'), presentation_serializer=UserSerializer)
+    total_sum = serializers.ReadOnlyField()
+    def create(self, validated_data):
+        return Order.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance.adress = validated_data.get('adress', instance.adress)
+        instance.user = validated_data.get('user', instance.user)
+        instance.status=validated_data.get('status', instance.status)
+        #instance.total_sum = validated_data.get('total_sum', instance.total_sum)
+        instance.date = validated_data.get('date', instance.date)
+        instance.name = validated_data.get('name', instance.name)
+        instance.number = validated_data.get('number', instance.number)
+        instance.save()
+        return instance
+    class Meta:
+        model=Order
+        fields=['id', 'user','total_sum','date', 'status','name','adress', 'number']
+    
 class PrintUser(serializers.ModelSerializer):
     class Meta:
         model=User
         fields='__all__'
 
+
+class PrintOrder(serializers.ModelSerializer):
+    class Meta:
+        model=Order
+        fields='__all__'
+
+
 class DeliverySerializer(serializers.ModelSerializer):
+    order=PresentablePrimaryKeyRelatedField(queryset=Order.objects.all(), presentation_serializer=OrderSerializer)
+
     runner=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='runner'), presentation_serializer=UserSerializer)
     def create(self, validated_data):
         return Delivery.objects.create(**validated_data)
@@ -106,46 +156,6 @@ class CartSerializer(serializers.ModelSerializer):
     # @staticmethod
     # def get_total_sum(obj):
 
-class ProductOrder_detail(serializers.ModelSerializer):
-    class Meta:
-        model=Product
-        fields='__all__'
-
-
-class Order_detailSerializer(serializers.ModelSerializer):
-    product=PresentablePrimaryKeyRelatedField(queryset=Product.objects.all(), presentation_serializer=ProductSerializer)
-    class Meta:
-        model = Order_detail 
-        fields=('id','order', 'quantity', 'product')
-    def create(self, validated_data):
-        return Order_detail.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.order = validated_data.get('order', instance.order)
-        instance.product = validated_data.get('product', instance.product)
-        instance.quantity=validated_data.get('quantity', instance.quantity)
-        instance.save()
-        return instance
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    user=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='client'), presentation_serializer=UserSerializer)
-    total_sum = serializers.ReadOnlyField()
-    def create(self, validated_data):
-        return Order.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.adress = validated_data.get('adress', instance.adress)
-        instance.user = validated_data.get('user', instance.user)
-        instance.status=validated_data.get('status', instance.status)
-        #instance.total_sum = validated_data.get('total_sum', instance.total_sum)
-        instance.date = validated_data.get('date', instance.date)
-        instance.name = validated_data.get('name', instance.name)
-        instance.number = validated_data.get('number', instance.number)
-        instance.save()
-        return instance
-    class Meta:
-        model=Order
-        fields=['id', 'user','total_sum','date', 'status','name','adress', 'number']
-    
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:

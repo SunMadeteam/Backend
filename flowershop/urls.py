@@ -47,7 +47,8 @@ urlpatterns = [
     path('statistic/', shop_views.StatisticView.as_view()),
     path('category/<int:pk>/', shop_views.Category_DetailView.as_view(), name='category'),
     path('delivery/<int:pk>/', shop_views.DeliveryUpdateDeleteView.as_view(), name='delivery'),
-    #path('statisticbyorder/', shop_views.StatisticView.as_view())
+    path('statisticbyorder/', shop_views.StatisticView.as_view()),
+    path('statisticbywd/', shop_views.SecondStatisticView.as_view()),
     path('api/order/<int:pk>/', shop_views.OrderUpdateDelete.as_view(), name='order'),
     path('api/order_detail/<int:pk>/', shop_views.Order_detailUpdateDelete.as_view(), name='order_detail'),
     path('delivery_by/<int:pk>/',shop_views.Delivered_by.as_view(), name='delivery'),
