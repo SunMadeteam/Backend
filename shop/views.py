@@ -17,7 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 import django_filters
 from django_filters import DateFilter
 
-from django.db.models import Count
+from django.db.models import Count, Sum
 import datetime
 import time
 from datetime import datetime
@@ -91,11 +91,11 @@ class Delivered_by(generics.ListCreateAPIView):
         django_filters.rest_framework.DjangoFilterBackend,
         filters.SearchFilter,
     ]
-    
+ 
     def get(self, request, pk):
-        serializer = DeliverySerializer(Delivery.objects.all().filter(runner=pk), many=True)
-        d=Delivery.objects.values('date').annotate(delivery_count=Count('id'))
-        
+        #serializer = DeliverySerializer(Delivery.objects.all().filter(runner=pk), many=True)
+        d=Delivery.objects.filter(runner=pk).filter(status='delivered').values('date').annotate(delivery_count=Count('id')).annotate(runner_salary=Sum('total_cost')/10)
+        #sr=Delivery.objects.filter(runner=pk).filter(status='delivered').values('date').annotate(runner_salary=Sum('total_cost'))
         return Response({"deliveries": d, 'user': str(request.user), 'auth': str(request.auth)})
 
 
@@ -110,6 +110,9 @@ class DeliveryView(generics.ListCreateAPIView):
         filters.SearchFilter,
     ]
     def post(self, request):
+        serializer = DeliverySerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            delivery_saved = serializer.save()
         order=get_object_or_404(Order.objects.all(),pk=request.data.get('order'))
         #print(order)
         runner=get_object_or_404(User.objects.all(), pk=request.data.get('runner'))

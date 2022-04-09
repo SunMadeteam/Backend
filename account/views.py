@@ -19,6 +19,9 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.viewsets import GenericViewSet
+import django_filters
+from django_filters import DateFilter
+
 
 
 class RegisterAPIView(APIView):
@@ -42,16 +45,24 @@ class RegisterAPIView(APIView):
         clients=UserSerializer(User.objects.filter(is_staff=False), many=True)
         return Response({"Clients": clients.data, 'user': str(request.user), 'auth': str(request.auth)})
 
-
 class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_admin
+'''
+class DateStaffFilter(django_filters.FilterSet):
+    start_date=DateFilter(field_name='date', lookup_expr=('gte'),)
+    end_date=DateFilter(field_name='date', lookup_expr=('lte'))
+    class Meta:
+        model = User
+        fields = ['date', 'is_active', 'usertype' ]
+'''
 
 class RegisterStaffAPIView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.filter(is_staff=True, is_admin=False)
     search_fields = ["number"]
     filterset_fields = [ "is_active", "usertype"]
+    #filter_class = DateStaffFilter
     filter_backends = (
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -149,4 +160,4 @@ class BranchAPIView(generics.ListCreateAPIView):
 class Branch_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BranchSerializer
     queryset = Branch.objects.all()
-    
+

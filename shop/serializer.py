@@ -23,8 +23,6 @@ class ProductCategory(serializers.ModelSerializer):
         model=Category
         fields=('name')
 
-
-
 class ProductSerializer(serializers.ModelSerializer):
     category=PresentablePrimaryKeyRelatedField(queryset=Category.objects.all(), presentation_serializer=CategorySerializer)
     def create(self, validated_data):
@@ -48,12 +46,10 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields = ('id', 'name','complexity_of_care','description','florist','price','category', 'hight', 'image','quantity')
 
-
 class ProductOrder_detail(serializers.ModelSerializer):
     class Meta:
         model=Product
         fields='__all__'
-
 
 class Order_detailSerializer(serializers.ModelSerializer):
     product=PresentablePrimaryKeyRelatedField(queryset=Product.objects.all(), presentation_serializer=ProductSerializer)
@@ -68,7 +64,6 @@ class Order_detailSerializer(serializers.ModelSerializer):
         instance.quantity=validated_data.get('quantity', instance.quantity)
         instance.save()
         return instance
-
 
 class OrderSerializer(serializers.ModelSerializer):
     user=PresentablePrimaryKeyRelatedField(queryset=User.objects.filter(usertype='client'), presentation_serializer=UserSerializer)
@@ -94,12 +89,10 @@ class PrintUser(serializers.ModelSerializer):
         model=User
         fields='__all__'
 
-
 class PrintOrder(serializers.ModelSerializer):
     class Meta:
         model=Order
         fields='__all__'
-
 
 class DeliverySerializer(serializers.ModelSerializer):
     order=PresentablePrimaryKeyRelatedField(queryset=Order.objects.all(), presentation_serializer=OrderSerializer)
@@ -120,7 +113,6 @@ class DeliverySerializer(serializers.ModelSerializer):
     class Meta:
         model=Delivery
         fields = ('id','runner','total_cost','status', 'date', 'order')
-
 
 class Cart_detailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -156,7 +148,6 @@ class CartSerializer(serializers.ModelSerializer):
     # @staticmethod
     # def get_total_sum(obj):
 
-
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites
@@ -168,5 +159,3 @@ class FavoritesSerializer(serializers.ModelSerializer):
         instance.product = validated_data.get('product', instance.product)
         instance.save()
         return instance
-
-
